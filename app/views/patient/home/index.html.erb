@@ -1,0 +1,92 @@
+<!-- app/views/patient/home/index.html.erb -->
+<%# ============ スタイル（簡易） ============ %>
+<style>
+.container{max-width:960px;margin:24px auto;padding:16px;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid #eee;padding-bottom:12px;}
+.h1{font-size:20px;margin:0;color:#2c5e46}
+.meta{font-size:14px;color:#555}
+.goal{background:#e6f3ed;padding:12px;border-radius:8px;margin:16px 0}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.cell{border:1px solid #e5e7eb;border-radius:8px;padding:10px;min-height:72px;background:#fafafa;position:relative;cursor:pointer}
+.cell:hover{background:#f2f8f5}
+.wday{font-size:12px;color:#6b7280}
+.day{font-weight:700}
+.today{background:#a0d4b5;color:#fff}
+.badge{position:absolute;top:6px;right:6px;font-size:10px;background:#f59e0b;color:#fff;border-radius:9999px;padding:2px 6px}
+.nav{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-bottom:12px}
+.button{display:inline-block;padding:10px 14px;border-radius:9999px;background:#4CAF50;color:#fff;text-decoration:none}
+.button:hover{background:#43a047}
+.helper{font-size:12px;color:#6b7280;margin-top:8px}
+</style>
+
+<div class="container">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <h1 class="h1">食事のきろく</h1>
+      <div class="muted" style="font-size:14px">
+        <%= current_user.last_name %> <%= current_user.first_name %> さん
+      </div>
+    </div>
+
+    <div class="card" style="background:#e6f3ed;margin-top:8px">
+      <div class="h2">今月の目標</div>
+      <div>間食をやめる！（仮）</div>
+      <% if @last_update_date %>
+        <div class="muted" style="font-size:12px;margin-top:6px">最終更新：<%= @last_update_date.strftime("%Y/%m/%d") %></div>
+      <% end %>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0">
+      <%= link_to "← 前月", month_path(@month.prev_month), class: "touch btn-secondary" %>
+      <div class="h2"><%= @month.strftime("%Y年 %-m月") %></div>
+      <%= link_to "翌月 →", month_path(@month.next_month), class: "touch btn-secondary" %>
+    </div>
+
+    <!-- モバイルに最適化した縦スクロールグリッド -->
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+      <% %w(日 月 火 水 木 金 土).each do |w| %>
+        <div class="muted" style="text-align:center;font-size:12px"><%= w %></div>
+      <% end %>
+      <% pre = @month.wday; pre.times { %><div></div><% } %>
+      <% @days.each do |d| %>
+        <% is_today = (d == @today) %>
+        <%= content_tag :button, type: "button", class: "touch", style: "height:64px;border:1px solid #e5e7eb;background:#{is_today ? '#a0d4b5' : '#fff'};color:#{is_today ? '#fff' : '#111'}",
+          data: { date: d } do %>
+          <div style="font-weight:700"><%= d.day %></div>
+          <% if @unread_comment_days.include?(d) %>
+            <div style="font-size:10px;background:var(--warn);color:#fff;border-radius:999px;display:inline-block;padding:2px 6px;margin-top:4px">未読</div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div style="height:80px"></div> <!-- FABの下に余白 -->
+  </div>
+
+  <!-- フローティングアクションボタン（右下固定） -->
+  <%= link_to "＋ 今日の記録", "#", id: "fab", class: "btn",
+      style: "position:fixed;right:16px;bottom:86px;padding:14px 18px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.15)" %>
+
+  <!-- タブバー（将来：ホーム/履歴/設定） -->
+  <div class="tabbar safe-area">
+    <%= link_to "ホーム", root_path %>
+    <%= link_to "履歴", "#" %>
+    <%= link_to "設定", edit_user_registration_path %>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // 日付セル→詳細（未実装の間はアラート）
+  document.querySelectorAll("[data-date]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      alert(`${btn.dataset.date} の記録詳細へ（後で実装）`);
+    });
+  });
+  // FAB
+  document.getElementById("fab")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    alert("今日の記録入力へ（後で実装）");
+  });
+});
+</script>

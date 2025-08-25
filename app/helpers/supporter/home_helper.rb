@@ -1,0 +1,2 @@
+module Supporter::HomeHelper
+end

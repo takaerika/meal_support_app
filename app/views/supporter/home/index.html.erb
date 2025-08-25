@@ -1,0 +1,4 @@
+<h1>サポーター マイページ（仮）</h1>
+<p><%= current_user.last_name %> <%= current_user.first_name %> さん、こんにちは。</p>
+<p>ここに「患者一覧」へのリンク等を置いていきます。</p>
+<%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete } %>
