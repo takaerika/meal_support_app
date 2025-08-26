@@ -1,0 +1,15 @@
+<h1><%= @date %> の食事記録</h1>
+
+<%= link_to "この日に新規追加", new_meal_record_path(date: @date), class: "btn" %>
+
+<ul>
+  <% @records.each do |r| %>
+    <li>
+      <%= link_to "#{MealRecord.human_attribute_name("slot.#{r.slot}") rescue r.slot}：#{truncate(r.text, length: 30)}", r %>
+      （<%= link_to "編集", edit_meal_record_path(r) %>）
+    </li>
+  <% end %>
+  <% if @records.empty? %>
+    <li>まだ記録がありません</li>
+  <% end %>
+</ul>
