@@ -1,0 +1,22 @@
+<h1>食事記録の編集</h1>
+<%= form_with model: @record, local: true do |f| %>
+  <div>
+    <%= f.label :eaten_on, "日付" %><br>
+    <%= f.date_field :eaten_on %>
+  </div>
+  <div>
+    <%= f.label :slot, "区分" %><br>
+    <%= f.select :slot, MealRecord.slots.keys.map { |k| [t("meal.slot.#{k}", default: k), k] } %>
+  </div>
+  <div>
+    <%= f.label :text, "食事内容" %><br>
+    <%= f.text_area :text %>
+  </div>
+  <div>
+    <%= f.label :note, "備考" %><br>
+    <%= f.text_area :note %>
+  </div>
+  <%= f.submit "更新する" %>
+<% end %>
+
+<%= link_to "この日の一覧へ戻る", meal_records_path(date: @record.eaten_on) %>
