@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_25_085855) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_26_051121) do
   create_table "invite_codes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "supporter_id", null: false
     t.string "code", null: false
@@ -18,6 +18,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_25_085855) do
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_invite_codes_on_code", unique: true
     t.index ["supporter_id"], name: "index_invite_codes_on_supporter_id"
+  end
+
+  create_table "meal_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "patient_id", null: false
+    t.date "eaten_on", null: false
+    t.integer "slot", null: false
+    t.text "text"
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patient_id", "eaten_on", "slot"], name: "index_meals_on_patient_date_slot", unique: true
+    t.index ["patient_id"], name: "index_meal_records_on_patient_id"
   end
 
   create_table "support_links", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -49,6 +61,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_25_085855) do
   end
 
   add_foreign_key "invite_codes", "users", column: "supporter_id"
+  add_foreign_key "meal_records", "users", column: "patient_id"
   add_foreign_key "support_links", "users", column: "patient_id"
   add_foreign_key "support_links", "users", column: "supporter_id"
 end
