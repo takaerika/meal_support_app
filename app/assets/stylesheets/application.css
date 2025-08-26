@@ -18,9 +18,8 @@ a:active{opacity:.8}
 input,select,textarea{width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:12px;font:inherit}
 label{display:block;margin:10px 0 6px}
 img{max-width:100%;height:auto;border-radius:12px}
-/* フッターナビ（モバイル固定） */
 .tabbar{position:sticky;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #eee;display:flex;gap:6px;justify-content:space-around;padding:8px 10px}
 .tabbar a{flex:1;text-align:center;padding:10px;border-radius:12px}
 .safe-area{padding-bottom:env(safe-area-inset-bottom)}
-/* 大きめタップ領域 */
 .touch{padding:12px;border-radius:12px}
+.tabbar a.active { font-weight: 700; }
