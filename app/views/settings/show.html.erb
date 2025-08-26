@@ -1,0 +1,54 @@
+<div class="container">
+  <div class="card">
+    <h1 class="h1">設定</h1>
+    <p class="muted" style="margin-top:-4px">アカウントと連携の基本設定</p>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="h2">アカウント</div>
+    <ul>
+      <li><%= link_to "プロフィール編集（名前・メール・パスワード）", edit_user_registration_path, class: "touch" %></li>
+      <li>
+        <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: "touch" %>
+      </li>
+      <li style="margin-top:6px">
+        <%= link_to "退会（アカウント削除）", "#", class: "touch", style: "color:#ef4444",
+              data: { turbo_confirm: "本当に退会しますか？（90日後に物理削除）" } %>
+        <!-- 退会画面は今後実装。今はリンクだけ置く最小構成 -->
+      </li>
+    </ul>
+  </div>
+
+  <% if current_user.patient? %>
+    <div class="card" style="margin-top:12px">
+      <div class="h2">サポーター連携（患者）</div>
+
+      <% if @supporter.present? %>
+        <p>現在のサポーター：<strong><%= @supporter.last_name %> <%= @supporter.first_name %></strong></p>
+        <%= button_to "サポーターの解除", connection_path(@supporter), method: :delete,
+              form: { data: { turbo_confirm: "サポーターとの連携を解除しますか？" } },
+              class: "btn-secondary" %>  
+      <% else %>
+        <p class="muted">サポーター未連携。招待コードを入力してください。</p>
+        <%= form_with url: connections_path, method: :post, local: true do |f| %>
+          <label>招待コード（6桁）</label>
+          <input type="text" name="code" placeholder="ABC123" required>
+          <div style="margin-top:8px"><button class="btn">登録</button></div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="card" style="margin-top:12px">
+      <div class="h2">招待コード（サポーター）</div>
+      <% if @invite_code.present? %>
+        <p>あなたの招待コード：</p>
+        <div class="touch" style="font-size:22px;font-weight:700;letter-spacing:2px">
+          <%= @invite_code.code %>
+        </div>
+        <p class="muted" style="font-size:12px">患者はこのコードを設定の「サポーター連携」から入力します。</p>
+      <% else %>
+        <p class="muted">招待コードは未発行です（サインアップ時に自動発行予定）。</p>
+      <% end %>
+    </div>
+  <% end %>
+</div>
