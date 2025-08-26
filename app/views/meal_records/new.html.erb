@@ -1,0 +1,26 @@
+<h1>食事記録の登録</h1>
+<%= form_with model: @record, local: true, html: { multipart: true } do |f| %>
+  <div>
+    <%= f.label :eaten_on, "日付" %><br>
+    <%= f.date_field :eaten_on %>
+  </div>
+
+  <div>
+    <%= f.label :slot, "区分" %><br>
+    <%= f.select :slot, MealRecord.slots.keys.map { |k| [t("meal.slot.#{k}", default: k), k] } %>
+  </div>
+
+  <div>
+    <%= f.label :text, "食事内容（テキスト）" %><br>
+    <%= f.text_area :text, placeholder: "例）ごはん１杯、味噌汁（豆腐）１杯、鯖の塩焼き１切れ" %>
+  </div>
+
+  <div>
+    <%= f.label :photo, "写真（JPG/PNG・5MBまで）" %><br>
+    <%= f.file_field :photo, accept: "image/jpeg,image/png" %>
+  </div>
+
+  <div style="margin-top:8px">
+    <%= f.submit "登録する" %>
+  </div>
+<% end %>

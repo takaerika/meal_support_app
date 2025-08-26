@@ -6,4 +6,5 @@ Rails.application.routes.draw do
 
   resource :settings, only: [:show]  
   resources :connections, only: [:create, :destroy]
+  resources :meal_records, only: [:index, :new, :create, :show, :edit, :update]
 end

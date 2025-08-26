@@ -10,7 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_25_085855) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_26_065151) do
+  create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "invite_codes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "supporter_id", null: false
     t.string "code", null: false
@@ -18,6 +46,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_25_085855) do
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_invite_codes_on_code", unique: true
     t.index ["supporter_id"], name: "index_invite_codes_on_supporter_id"
+  end
+
+  create_table "meal_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "patient_id", null: false
+    t.date "eaten_on", null: false
+    t.integer "slot", null: false
+    t.text "text"
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patient_id", "eaten_on", "slot"], name: "index_meals_on_patient_date_slot", unique: true
+    t.index ["patient_id"], name: "index_meal_records_on_patient_id"
   end
 
   create_table "support_links", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -48,7 +88,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_25_085855) do
     t.index ["role"], name: "index_users_on_role"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "invite_codes", "users", column: "supporter_id"
+  add_foreign_key "meal_records", "users", column: "patient_id"
   add_foreign_key "support_links", "users", column: "patient_id"
   add_foreign_key "support_links", "users", column: "supporter_id"
 end

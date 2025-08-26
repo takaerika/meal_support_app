@@ -15,7 +15,8 @@ class User < ApplicationRecord
   has_many :support_links_as_patient, class_name: "SupportLink",
            foreign_key: :patient_id, dependent: :destroy
   has_many :supporters, through: :support_links_as_patient, source: :supporter
-
+  has_many :meal_records, foreign_key: :patient_id, dependent: :destroy
+  
   validates :first_name, :last_name, presence: true
 
   after_commit :ensure_invite_code!, on: :create
