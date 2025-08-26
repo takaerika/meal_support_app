@@ -5,5 +5,9 @@ FactoryBot.define do
     slot     { :breakfast }
     text     { "ごはん、味噌汁、焼き魚" }
     note     { "外食" }
+
+    trait :no_text do
+      text { "" }
+    end
   end
 end
