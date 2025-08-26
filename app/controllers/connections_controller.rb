@@ -4,7 +4,8 @@ class ConnectionsController < ApplicationController
   def create
     return redirect_to settings_path, alert: "患者のみ操作できます" unless current_user.patient?
 
-    supporter = InviteCode.includes(:supporter).find_by(code: params[:code])&.supporter
+    code = params[:code].to_s.strip.upcase
+    supporter = InviteCode.includes(:supporter).find_by(code: code)&.supporter
     return redirect_to settings_path, alert: "コードが正しくありません" unless supporter
 
     SupportLink.find_or_create_by!(supporter: supporter, patient: current_user)
@@ -13,7 +14,6 @@ class ConnectionsController < ApplicationController
 
   def destroy
     return redirect_to settings_path, alert: "患者のみ操作できます" unless current_user.patient?
-    # 1:1想定の最小実装：自分のサポーターとのリンクを全削除
     SupportLink.where(patient_id: current_user.id).delete_all
     redirect_to settings_path, notice: "サポーターとの連携を解除しました"
   end
