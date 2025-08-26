@@ -10,7 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_25_071214) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_25_085855) do
+  create_table "invite_codes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "supporter_id", null: false
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_invite_codes_on_code", unique: true
+    t.index ["supporter_id"], name: "index_invite_codes_on_supporter_id"
+  end
+
+  create_table "support_links", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "supporter_id", null: false
+    t.bigint "patient_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patient_id"], name: "index_support_links_on_patient_id"
+    t.index ["supporter_id", "patient_id"], name: "index_support_links_on_supporter_id_and_patient_id", unique: true
+    t.index ["supporter_id"], name: "index_support_links_on_supporter_id"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -29,4 +48,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_25_071214) do
     t.index ["role"], name: "index_users_on_role"
   end
 
+  add_foreign_key "invite_codes", "users", column: "supporter_id"
+  add_foreign_key "support_links", "users", column: "patient_id"
+  add_foreign_key "support_links", "users", column: "supporter_id"
 end
