@@ -1,0 +1,9 @@
+<%# ログイン時だけ表示 %>
+<% if user_signed_in? %>
+  <div class="tabbar safe-area">
+    <%= link_to "ホーム", (current_user.supporter? ? supporter_home_path : root_path),
+        class: ("active" if current_page?(current_user.supporter? ? supporter_home_path : root_path)) %>
+    <%= link_to "設定", settings_path,
+        class: ("active" if current_page?(settings_path)) %>
+  </div>
+<% end %>
