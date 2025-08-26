@@ -30,7 +30,12 @@ class MealRecordsController < ApplicationController
   def edit; end
 
   def update
-    if @record.update(record_params)
+    @record = current_user.meal_records.find(params[:id])
+    if params[:meal_record][:remove_photo] == "1"
+      @record.photo.purge
+    end
+
+    if @record.update(record_params.except(:remove_photo))
       redirect_to @record, notice: "食事記録を更新しました"
     else
       flash.now[:alert] = "更新に失敗しました"
@@ -48,7 +53,7 @@ class MealRecordsController < ApplicationController
   end
 
   def record_params
-    params.require(:meal_record).permit(:eaten_on, :slot, :text, :note)
+    params.require(:meal_record).permit(:eaten_on, :slot, :text, :note, :photo, :remove_photo)
   end
 
   # "2025-08-26" 形式のみ許可して安全にパース
