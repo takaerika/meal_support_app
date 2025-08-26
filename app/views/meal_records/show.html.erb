@@ -1,20 +1,24 @@
 <h1>食事記録詳細</h1>
+
 <p>日付：<%= @record.eaten_on %></p>
-<p>区分：<%= @record.slot %></p>
+<p>区分：<%= t("meal.slot.#{@record.slot}", default: @record.slot) %></p>
 <p>内容：<%= simple_format(@record.text) %></p>
 
 <% if @record.photo.attached? %>
-  <div>
-    <p>写真：</p>
-    <%= link_to url_for(@record.photo), target: "_blank", rel: "noopener" do %>
-      <%= image_tag @record.photo.variant(resize_to_limit: [600, 600]) %>
-    <% end %>
+  <div class="meal-photo" style="margin:12px 0;">
+    <%= image_tag @record.photo,
+                  alt: "食事写真",
+                  style: "max-width:100%;height:auto;border-radius:8px;",
+                  loading: "lazy" %>
+    <div style="margin-top:6px;">
+      <%= link_to "画像を新しいタブで開く", url_for(@record.photo), target: "_blank", rel: "noopener" %>
+    </div>
   </div>
 <% end %>
 
 <p>備考：<%= simple_format(@record.note) %></p>
 
-<div>
-  <%= link_to "編集", edit_meal_record_path(@record), class: "btn" %>
+<div style="margin-top:12px;">
+  <%= link_to "編集", edit_meal_record_path(@record) %> /
   <%= link_to "この日の一覧へ戻る", meal_records_path(date: @record.eaten_on) %>
 </div>
