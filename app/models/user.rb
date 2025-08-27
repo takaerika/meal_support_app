@@ -17,7 +17,7 @@ class User < ApplicationRecord
   has_many :supporters, through: :support_links_as_patient, source: :supporter
   has_many :meal_records, foreign_key: :patient_id, dependent: :destroy
   has_many :comments, dependent: :destroy
-   
+
   validates :first_name, :last_name, presence: true
 
   after_commit :ensure_invite_code!, on: :create
@@ -29,6 +29,10 @@ class User < ApplicationRecord
 
   before_validation :normalize_email
   def full_name = "#{last_name} #{first_name}"
+  
+  def last_name_with_san
+    "#{last_name}さん"
+  end
   
   private
   def normalize_email; self.email = email.to_s.downcase.strip; end

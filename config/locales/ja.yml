@@ -10,3 +10,11 @@ ja:
       not_a_number: "は数値で入力してください"
       greater_than: "%{count}より大きい値にしてください"
       less_than: "%{count}より小さい値にしてください"
+  time:
+    formats:
+      default: "%Y/%m/%d %H:%M"
+      short: "%m/%d %H:%M"
+  date:
+    formats:
+      default: "%Y/%m/%d"
+      short: "%m/%d"
