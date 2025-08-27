@@ -52,12 +52,13 @@
 
 <% if user_signed_in? && current_user.supporter? %>
   <div class="comment-form">
-    <%= form_with url: meal_record_comments_path(@record), method: :post, local: true do |f| %>
-      <%= f.text_area :body, rows: 3, placeholder: "患者さんへのメッセージを入力…（1000文字まで）",
-                       class: "form-control", required: true %>
-      <div class="comment-actions">
-        <%= f.submit "コメントを投稿", class: "btn-primary" %>
-      </div>
+    <%= form_with model: [@record, Comment.new], local: true do |f| %>
+      <%= f.text_area :body, rows: 3,
+        placeholder: "患者さんへのメッセージを入力…（1000文字まで）",
+        class: "form-control", required: true %>
+    <div class="comment-actions">
+    <%= f.submit "コメントを投稿", class: "btn-primary" %>
+    </div>
     <% end %>
   </div>
 <% end %>

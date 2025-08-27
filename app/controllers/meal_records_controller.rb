@@ -1,6 +1,6 @@
 class MealRecordsController < ApplicationController
   before_action :authenticate_user!
-  before_action :ensure_patient!
+  before_action :ensure_patient!, except: [:show]
   before_action :set_record, only: [:show, :edit, :update]
 
   def index
@@ -45,7 +45,12 @@ class MealRecordsController < ApplicationController
 
   private
   def set_record
-    @record = current_user.meal_records.find(params[:id])
+    @record = MealRecord.find(params[:id])
+
+    unless @record.patient == current_user ||
+         (current_user.supporter? && current_user.patients.include?(@record.patient))
+      redirect_to root_path, alert: "アクセス権限がありません"
+    end
   end
 
   def ensure_patient!
