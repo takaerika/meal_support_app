@@ -1,15 +1,37 @@
-<h1><%= @date %> の食事記録</h1>
+<h2 class="page-title"><%= @date.strftime("%Y/%m/%d") %> の食事記録</h2>
 
-<%= link_to "この日に新規追加", new_meal_record_path(date: @date), class: "btn" %>
-
-<ul>
+<ul class="meal-list">
   <% @records.each do |r| %>
-    <li>
-      <%= link_to "#{MealRecord.human_attribute_name("slot.#{r.slot}") rescue r.slot}：#{truncate(r.text, length: 30)}", r %>
-      （<%= link_to "編集", edit_meal_record_path(r) %>）
+    <li class="meal-item">
+      <%= link_to meal_record_path(r), class: "meal-link" do %>
+        <span class="meal-slot-badge"><%= t("meal.slot.#{r.slot}", default: r.slot) %></span>
+        <span class="meal-text">
+          <%= truncate(r.text.presence || "（写真のみ）", length: 40) %>
+        </span>
+        <% if r.photo.attached? %>
+          <span class="meal-has-photo" aria-label="写真あり">📷</span>
+        <% end %>
+      <% end %>
     </li>
   <% end %>
-  <% if @records.empty? %>
-    <li>まだ記録がありません</li>
-  <% end %>
 </ul>
+
+<style>
+.page-title { margin: 8px 0 12px; font-size: 18px; font-weight: 700; }
+.meal-list { list-style: none; padding-left: 0; margin: 0; }
+.meal-item { margin: 10px 0; }
+.meal-link {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: #333; padding: 10px 12px;
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+}
+.meal-link:hover { background: #f9fafb; }
+.meal-slot-badge {
+  display: inline-block; min-width: 3em; text-align: center;
+  font-weight: 700; font-size: 14px; color: #2c5e46;
+  background: #e6f3ed; padding: 4px 10px; border-radius: 999px;
+}
+.meal-text { font-size: 14px; color: #555; flex: 1; }
+.meal-has-photo { font-size: 16px; opacity: 0.8; }
+.nav-actions { margin-top: 16px; }
+</style>

@@ -1,36 +1,104 @@
-<h1>食事記録の編集</h1>
-<%= form_with model: @record, local: true, html: { multipart: true } do |f| %>
-  <div>
-    <%= f.label :eaten_on, "日付" %><br>
-    <%= f.date_field :eaten_on %>
+<%= form_with model: @record, local: true do |f| %>
+  <div class="form-group">
+    <label>日付</label>
+    <%= f.date_field :eaten_on, class: "form-control", required: true %>
   </div>
 
-  <div>
-    <%= f.label :slot, "区分" %><br>
-    <%= f.select :slot, MealRecord.slots.keys.map { |k| [t("meal.slot.#{k}", default: k), k] } %>
+  <div class="form-group">
+    <label>区分</label>
+    <%= f.select :slot,
+          MealRecord.slots.keys.map { |k| [t("meal.slot.#{k}", default: k), k] },
+          { prompt: "選択してください" },
+          { class: "form-control", required: true } %>
   </div>
 
-  <div>
-    <%= f.label :text, "食事内容（テキスト）" %><br>
-    <%= f.text_area :text %>
+  <div class="form-group">
+    <label>内容（テキスト）</label>
+    <%= f.text_area :text, rows: 4, class: "form-control", placeholder: "例）ごはん、味噌汁、焼き魚" %>
   </div>
 
-  <div>
-    <%= f.label :photo, "写真（差し替え可）" %><br>
-    <%= f.file_field :photo, accept: "image/jpeg,image/png" %>
+  <div class="form-group">
+    <label>備考</label>
+    <%= f.text_field :note, class: "form-control", placeholder: "外食 / 少なめ など" %>
   </div>
 
-  <% if @record.photo.attached? %>
-    <div style="margin:8px 0">
-      現在の写真：<br>
-      <%= image_tag @record.photo.variant(resize_to_limit: [300, 300]) %><br>
-      <label>
-        <%= f.check_box :remove_photo, {}, "1", "0" %> 写真を削除する
-      </label>
+  <div class="form-group">
+    <label>現在の写真</label>
+    <% if @record.photo.attached? %>
+      <div class="current-photo">
+        <%= image_tag @record.photo, alt: "現在の写真",
+              style: "max-width: 100%; height: auto; border-radius: 8px;" %>
+        <div class="current-photo-link">
+          <%= link_to "新しいタブで開く", url_for(@record.photo), target: "_blank", rel: "noopener" %>
+        </div>
+      </div>
+    <% else %>
+      <p class="muted">（未登録）</p>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <label>写真を変更 / 追加</label>
+    <%= f.file_field :photo, accept: "image/jpeg,image/png", id: "meal_photo_input", class: "form-control" %>
+    <small class="help-text">※ 対応：JPG / PNG ・ 5MB以下</small>
+
+    <div id="meal_photo_preview" class="photo-preview" style="display:none;">
+      <img id="meal_photo_preview_img" alt="プレビュー"
+           style="max-width:100%; height:auto; border-radius:8px;">
     </div>
-  <% end %>
+  </div>
 
-  <%= f.submit "更新する" %>
+  <div class="actions">
+    <%= f.submit (@record.persisted? ? "更新する" : "登録する"),
+          class: "btn-primary" %>
+    <%= link_to "キャンセル", (@record.persisted? ? meal_record_path(@record) : patient_home_index_path),
+          class: "btn-link" %>
+  </div>
 <% end %>
 
-<%= link_to "この日の一覧へ戻る", meal_records_path(date: @record.eaten_on) %>
+<style>
+.form-group { margin: 12px 0; }
+.form-control { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; }
+.btn-primary { display: inline-block; padding: 10px 16px; border-radius: 8px;
+  background: #2c5e46; color: #fff; text-decoration: none; border: none; cursor: pointer; }
+.btn-link { margin-left: 12px; text-decoration: none; color: #2c5e46; }
+.muted { color: #777; }
+.current-photo { margin-top: 8px; }
+.current-photo-link { margin-top: 6px; }
+.help-text { color: #777; display: block; margin-top: 4px; }
+</style>
+
+<script>
+document.addEventListener("turbo:load", setupPhotoPreview);
+document.addEventListener("DOMContentLoaded", setupPhotoPreview);
+
+function setupPhotoPreview() {
+  var input       = document.getElementById("meal_photo_input");
+  var previewWrap = document.getElementById("meal_photo_preview");
+  var previewImg  = document.getElementById("meal_photo_preview_img");
+  if (!input || !previewWrap || !previewImg) return;
+
+  // 一度だけ登録（Turbo重複対策）
+  if (input.dataset.previewBound === "true") return;
+  input.dataset.previewBound = "true";
+
+  input.addEventListener("change", function (e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) { previewWrap.style.display = "none"; return; }
+
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+      alert("JPG または PNG を選択してください");
+      input.value = "";
+      previewWrap.style.display = "none";
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      previewImg.src = ev.target.result;
+      previewWrap.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  });
+}
+</script>
