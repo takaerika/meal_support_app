@@ -23,7 +23,8 @@ ja:
         photo: 写真
       comment:
         body: 本文
-        user: 投稿者
+        user: ユーザー
+        meal_record: 食事記録
       support_link:
         patient: 患者
         supporter: サポーター
