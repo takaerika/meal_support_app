@@ -73,7 +73,15 @@
   <%# 実データに接続したら差し替え %>
   <section class="comment-section">
     <p><strong>サポーターからの新着コメント🔔</strong></p>
-    <p>「昨日の夕食、野菜が多くて素晴らしいですね！」</p>
+    <% if @latest_comment.present? %>
+      <p>
+        <%= @latest_comment.user.last_name_with_san %>：
+        「<%= @latest_comment.body %>」
+      </p>
+      <small><%= l(@latest_comment.created_at, format: :short) %></small>
+    <% else %>
+      <p>まだコメントはありません</p>
+    <% end %>
   </section>
 
   <%# タブバーに被らない余白（共通タブバー使用時） %>

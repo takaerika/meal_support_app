@@ -1,6 +1,7 @@
 class MealRecord < ApplicationRecord
   belongs_to :patient, class_name: "User"
   has_one_attached :photo
+  has_many :comments, dependent: :destroy
 
   enum slot: { breakfast: 0, lunch: 1, dinner: 2, snack: 3 }
 
@@ -9,6 +10,7 @@ class MealRecord < ApplicationRecord
                                      message: "はこの区分ですでに登録されています" }
   validate  :text_or_photo_present
   validate  :photo_constraints
+   validates :slot, presence: true
 
   private
 

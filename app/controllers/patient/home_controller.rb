@@ -19,5 +19,10 @@ class Patient::HomeController < ApplicationController
     # ビュー用：曜日/日数など
     @first_wday = @month.wday
     @last_day   = (@month.next_month - 1).day
+
+    @latest_comment = Comment.joins(:meal_record)
+                           .where(meal_records: { patient_id: current_user.id })
+                           .order(created_at: :desc)
+                           .first
   end
 end

@@ -1,20 +1,75 @@
 <h1>食事記録詳細</h1>
+
 <p>日付：<%= @record.eaten_on %></p>
-<p>区分：<%= @record.slot %></p>
+<p>区分：<%= I18n.t("activerecord.enums.meal_record.slot.#{@record.slot}") %></p>
 <p>内容：<%= simple_format(@record.text) %></p>
 
 <% if @record.photo.attached? %>
-  <div>
-    <p>写真：</p>
-    <%= link_to url_for(@record.photo), target: "_blank", rel: "noopener" do %>
-      <%= image_tag @record.photo.variant(resize_to_limit: [600, 600]) %>
-    <% end %>
+  <div class="meal-photo" style="margin:12px 0;">
+    <%= image_tag @record.photo,
+                  alt: "食事写真",
+                  style: "max-width:100%;height:auto;border-radius:8px;",
+                  loading: "lazy" %>
+    <div style="margin-top:6px;">
+      <%= link_to "画像を新しいタブで開く", url_for(@record.photo), target: "_blank", rel: "noopener" %>
+    </div>
   </div>
 <% end %>
 
 <p>備考：<%= simple_format(@record.note) %></p>
 
-<div>
-  <%= link_to "編集", edit_meal_record_path(@record), class: "btn" %>
+<div style="margin-top:12px;">
+  <%= link_to "編集", edit_meal_record_path(@record) %> /
   <%= link_to "この日の一覧へ戻る", meal_records_path(date: @record.eaten_on) %>
 </div>
+
+<hr>
+
+<h2>コメント</h2>
+
+<% if @record.comments.any? %>
+  <ul class="comment-list">
+    <% @record.comments.order(created_at: :desc).each do |c| %>
+      <li class="comment-item">
+        <div class="comment-meta">
+          <strong><%= c.user.full_name %></strong>
+          <span class="comment-date"><%= c.created_at.in_time_zone("Asia/Tokyo").strftime("%Y/%m/%d %H:%M") %></span>
+        </div>
+        <div class="comment-body"><%= simple_format(h(c.body)) %></div>
+
+        <% if user_signed_in? && current_user.supporter? && c.user_id == current_user.id %>
+          <div class="comment-actions">
+            <%= link_to "削除", meal_record_comment_path(@record, c),
+                        data: { turbo_method: :delete, turbo_confirm: "削除しますか？" } %>
+          </div>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="muted">まだコメントはありません</p>
+<% end %>
+
+<% if user_signed_in? && current_user.supporter? %>
+  <div class="comment-form">
+    <%= form_with model: [@record, Comment.new], local: true do |f| %>
+      <%= f.text_area :body, rows: 3,
+        placeholder: "患者さんへのメッセージを入力…（1000文字まで）",
+        class: "form-control", required: true %>
+    <div class="comment-actions">
+    <%= f.submit "コメントを投稿", class: "btn-primary" %>
+    </div>
+    <% end %>
+  </div>
+<% end %>
+
+<style>
+.comment-list { list-style: none; padding-left: 0; }
+.comment-item { border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 12px; margin: 10px 0; background: #fff; }
+.comment-meta { font-size: 12px; color: #666; display: flex; gap: 10px; }
+.comment-body { margin-top: 6px; font-size: 14px; white-space: pre-wrap; }
+.comment-actions { text-align: right; margin-top: 6px; }
+.form-control { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; }
+.btn-primary { display: inline-block; padding: 8px 14px; border-radius: 8px; background: #2c5e46; color: #fff; border: none; }
+.muted { color: #777; }
+</style>

@@ -2,16 +2,13 @@
 
 <ul class="meal-list">
   <% @records.each do |r| %>
-    <li class="meal-item">
-      <%= link_to meal_record_path(r), class: "meal-link" do %>
-        <span class="meal-slot-badge"><%= t("meal.slot.#{r.slot}", default: r.slot) %></span>
-        <span class="meal-text">
-          <%= truncate(r.text.presence || "（写真のみ）", length: 40) %>
-        </span>
-        <% if r.photo.attached? %>
-          <span class="meal-has-photo" aria-label="写真あり">📷</span>
-        <% end %>
-      <% end %>
+
+    <li>
+      <%= link_to "#{I18n.t("activerecord.enums.meal_record.slot.#{r.slot}")}：#{truncate(r.text, length: 30)}", r %>
+      （<%= link_to "編集", edit_meal_record_path(r) %>）
+
+   
+
     </li>
   <% end %>
 </ul>
