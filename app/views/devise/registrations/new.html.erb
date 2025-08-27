@@ -28,15 +28,16 @@
   </div>
 
   <div class="field">
-   <%= f.label :first_name, "名" %><br>
+    <%= f.label :first_name, "名" %><br>
     <%= f.text_field :first_name, required: true %>
   </div>
 
   <div class="field">
-    <%= f.label :role, "役割" %><br>
+    <%= f.label :role, "区分" %><br>
     <%= f.select :role,
-      options_for_select([["患者", "patient"], ["サポーター", "supporter"]], "patient"),
-      {} %>                
+               User.roles.keys.map { |r| [I18n.t("activerecord.enums.user.role.#{r}"), r] },
+               { include_blank: "選択してください" },
+               required: true %>
   </div>
 
   <div class="actions">

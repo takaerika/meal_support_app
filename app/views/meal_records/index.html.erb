@@ -5,7 +5,7 @@
 <ul>
   <% @records.each do |r| %>
     <li>
-      <%= link_to "#{MealRecord.human_attribute_name("slot.#{r.slot}") rescue r.slot}：#{truncate(r.text, length: 30)}", r %>
+      <%= link_to "#{I18n.t("activerecord.enums.meal_record.slot.#{r.slot}")}：#{truncate(r.text, length: 30)}", r %>
       （<%= link_to "編集", edit_meal_record_path(r) %>）
     </li>
   <% end %>

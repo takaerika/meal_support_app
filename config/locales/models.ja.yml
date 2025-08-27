@@ -1,0 +1,45 @@
+ja:
+  activerecord:
+    models:
+      user: ユーザー
+      meal_record: 食事記録
+      comment: コメント
+      support_link: サポートリンク
+      invite_code: 招待コード
+
+    attributes:
+      user:
+        first_name: 名
+        last_name: 姓
+        email: メールアドレス
+        password: パスワード
+        role: 区分
+        deleted_at: 退会日時
+      meal_record:
+        eaten_on: 日付
+        slot: 区分
+        text: 内容
+        note: 備考
+        photo: 写真
+      comment:
+        body: 本文
+        user: 投稿者
+      support_link:
+        patient: 患者
+        supporter: サポーター
+      invite_code:
+        code: 招待コード
+        supporter: サポーター
+
+    enums:
+      user:
+        role:
+          patient: 患者
+          supporter: サポーター
+      meal_record:
+        slot:
+          breakfast: 朝食
+          lunch: 昼食
+          dinner: 夕食
+          snack: 間食
+
