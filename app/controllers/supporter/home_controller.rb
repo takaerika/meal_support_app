@@ -1,9 +1,15 @@
 class Supporter::HomeController < ApplicationController
   before_action :authenticate_user!
+  before_action :require_supporter!
 
   def index
-    # 誤って患者が来たら患者トップへ
-    redirect_to root_path, alert: "患者のトップに移動しました。" and return if current_user.patient?
-    # ここは当面プレースホルダ
+    # 自分に紐づく患者を一覧表示
+    @patients = current_user.patients.includes(:meal_records)
+  end
+
+  private
+
+  def require_supporter!
+    redirect_to root_path, alert: "サポーターのみ利用できます" unless current_user.supporter?
   end
 end
