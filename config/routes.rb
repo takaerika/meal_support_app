@@ -9,4 +9,7 @@ Rails.application.routes.draw do
   resources :meal_records, only: [:index, :new, :create, :show, :edit, :update] do
      resources :comments, only: [:create, :destroy]
   end
+  namespace :supporter do
+  resources :patients, only: [:show]
+  end
 end
