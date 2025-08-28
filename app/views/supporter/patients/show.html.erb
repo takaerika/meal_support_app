@@ -1,0 +1,33 @@
+<div class="container">
+  <header class="header">
+    <h1><%= @patient.full_name %> さんの食事記録</h1>
+    <div class="user-info">
+      サポーター: <%= current_user.full_name %>
+    </div>
+  </header>
+
+  <!-- カレンダー部分 -->
+  <%= render "shared/calendar",
+             current_month: @month,
+             prev_month: @prev_month,
+             next_month: @next_month,
+             first_wday: @first_wday,
+             last_day: @last_day,
+             base_path: supporter_patient_path(@patient) %>
+
+  <!-- 選択日の記録一覧 -->
+  <section class="record-list">
+    <h2><%= @date.strftime("%Y年%m月%d日") %> の食事記録</h2>
+    <% if @records.any? %>
+      <ul>
+        <% @records.each do |r| %>
+          <li>
+            <%= link_to "#{I18n.t("activerecord.enums.meal_record.slot.#{r.slot}")}：#{truncate(r.text, length: 30)}", meal_record_path(r) %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>記録はありません</p>
+    <% end %>
+  </section>
+</div>

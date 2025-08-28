@@ -19,8 +19,13 @@
 <p>備考：<%= simple_format(@record.note) %></p>
 
 <div style="margin-top:12px;">
-  <%= link_to "編集", edit_meal_record_path(@record) %> /
-  <%= link_to "この日の一覧へ戻る", meal_records_path(date: @record.eaten_on) %>
+  <% if current_user.patient? %>
+    <%= link_to "編集", edit_meal_record_path(@record) %> /
+    <%= link_to "この日の一覧へ戻る", meal_records_path(date: @record.eaten_on) %>
+  <% else %>
+    <%= link_to "この患者のカレンダーに戻る",
+        supporter_patient_path(@record.patient, date: @record.eaten_on) %>
+  <% end %>
 </div>
 
 <hr>

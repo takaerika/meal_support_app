@@ -2,23 +2,26 @@
 function setupCalendarNavigation() {
   const calendar = document.getElementById("calendar");
   if (calendar) {
-    // data-year と data-month から YYYY-MM を作る（monthは1〜12想定）
     const year  = calendar.dataset.year;
     const month = calendar.dataset.month.toString().padStart(2, "0");
+    const basePath = calendar.dataset.basePath;
 
-    calendar.addEventListener("click", (e) => {
-      const el = e.target;
-      if (!(el instanceof HTMLElement)) return;
-      if (el.classList.contains("day-name")) return;
-      const dayText = el.textContent?.trim();
-      if (!dayText) return;
+    // 日付セルだけにイベントを設定
+    calendar.querySelectorAll(".day-cell").forEach(cell => {
+      cell.addEventListener("click", () => {
+        const day = cell.dataset.day;
+        if (!day) return;
 
-      const day = dayText.padStart(2, "0");
-      const dateStr = `${year}-${month}-${day}`;
-      window.location.href = `/meal_records?date=${dateStr}`;
+        const dayPadded = day.toString().padStart(2, "0");
+        const dateStr = `${year}-${month}-${dayPadded}`;
+
+        // 遷移先URL
+        window.location.href = `${basePath}?date=${dateStr}&year=${year}&month=${month}`;
+      });
     });
   }
 
+  // 「今日の食事を記録する」ボタン
   const recordButton = document.getElementById("recordButton");
   if (recordButton) {
     recordButton.addEventListener("click", (e) => {
@@ -32,7 +35,6 @@ function setupCalendarNavigation() {
   }
 }
 
-// Turbo Drive 対応（Rails 7 デフォルト）
+// Turbo Drive 対応
 document.addEventListener("turbo:load", setupCalendarNavigation);
-// 初期ロード用（Turbo無効時など）
 document.addEventListener("DOMContentLoaded", setupCalendarNavigation);

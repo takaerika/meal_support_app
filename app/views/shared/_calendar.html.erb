@@ -1,35 +1,42 @@
-<div class="container">
-  <header class="header">
-    <h1>食事のきろく</h1>
-    <div class="user-info">
-      こんにちは、<%= current_user.full_name %> さん
-    </div>
-  </header>
+<% base_path ||= ->(opts = {}) { root_path(opts) } %>
+<% current_month ||= Date.today.beginning_of_month %>
+<% prev_month   ||= (current_month << 1) %>
+<% next_month   ||= (current_month >> 1) %>
+<% first_wday   ||= current_month.wday %>
+<% last_day     ||= (current_month.next_month - 1).day %>
 
-  <%= render "shared/calendar",
-             current_month: @month,
-             prev_month: @prev_month,
-             next_month: @next_month,
-             first_wday: @first_wday,
-             last_day: @last_day,
-             base_path: meal_records_path %>
-
-  <%# 新着コメント（任意） %>
-  <section class="comment-section">
-    <p><strong>サポーターからの新着コメント🔔</strong></p>
-    <% if @latest_comment.present? %>
-      <p>
-        <%= @latest_comment.user.last_name %>さん：
-        「<%= @latest_comment.body %>」
-        <small><%= l(@latest_comment.created_at, format: :short) %></small>
-      </p>
-    <% else %>
-      <p>まだコメントはありません</p>
-    <% end %>
-  </section>
+<div class="calendar-header">
+  <%= link_to "◀︎", "#{base_path}?year=#{prev_month.year}&month=#{prev_month.month}", class: "month-nav" %>
+  <h3><%= current_month.strftime("%Y年 %-m月") %></h3>
+  <%= link_to "▶︎", "#{base_path}?year=#{next_month.year}&month=#{next_month.month}", class: "month-nav" %>
 </div>
 
-<%# ====== 簡易スタイル（MVP用／後でCSSに切り出し） ====== %>
+<div id="calendar"
+   class="calendar"
+   data-year="<%= current_month.year %>"
+   data-month="<%= current_month.month %>"
+   data-base-path="<%= base_path %>">
+   
+  <!-- 曜日ヘッダ -->
+  <% %w(日 月 火 水 木 金 土).each do |day| %>
+    <div class="day-name"><%= day %></div>
+  <% end %>
+
+  <!-- 先頭の空マス -->
+  <% first_wday.times do %>
+    <div class="empty"></div>
+  <% end %>
+
+  <!-- 日付セル -->
+  <% 1.upto(last_day) do |d| %>
+    <% date_obj = Date.new(current_month.year, current_month.month, d) %>
+    <% is_today = (date_obj == Time.zone.today) %>
+    <div class="day-cell <%= 'today' if is_today %>" data-day="<%= d %>">
+      <span class="day-number"><%= d %></span>
+    </div>
+  <% end %>
+</div>
+
 <style>
   .container { max-width: 820px; margin: 0 auto; background:#fff; padding:16px; border-radius:8px; }
   .header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:16px; }

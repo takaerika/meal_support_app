@@ -4,10 +4,28 @@ class MealRecordsController < ApplicationController
   before_action :set_record, only: [:show, :edit, :update]
 
   def index
+  @patient = current_user  
+
+  if params[:date].present?
+    # 日別表示
     @date = safe_date(params[:date]) || Date.current
-    @records = current_user.meal_records
-                  .where(eaten_on: @date)
-                  .order(slot: :asc)
+    @records = @patient.meal_records.where(eaten_on: @date).order(:slot)
+  else
+    # 月別表示
+    today = Date.today
+    year  = params[:year].presence&.to_i || today.year
+    month = params[:month].presence&.to_i || today.month
+    @month = Date.new(year, month, 1)
+
+    @prev_month = @month << 1
+    @next_month = @month >> 1
+    @first_wday = @month.wday
+    @last_day   = (@month.next_month - 1).day
+
+    @records = @patient.meal_records
+                       .where(eaten_on: @month..@month.end_of_month)
+                       .order(:eaten_on, :slot)
+    end
   end
 
   def new
