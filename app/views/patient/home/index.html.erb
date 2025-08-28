@@ -1,26 +1,4 @@
-<%# ===== 月の決定（URLの ?year=YYYY&month=MM を優先） ===== %>
-<%
-  today = Time.zone.today
-  year  = params[:year].presence&.to_i || today.year
-  month = params[:month].presence&.to_i || today.month
-
-  begin
-    current_month = Date.new(year, month, 1)
-  rescue ArgumentError
-    current_month = Date.new(today.year, today.month, 1)
-  end
-
-  prev_month = (current_month << 1) # 前月
-  next_month = (current_month >> 1) # 翌月
-
-  # カレンダー描画用の値
-  first_wday = current_month.wday                       # 月初の曜日(0=日)
-  last_day   = (current_month.next_month - 1).day       # 月末日
-%>
-
 <div class="container">
-
-  <%# ==== ヘッダー ==== %>
   <header class="header">
     <h1>食事のきろく</h1>
     <div class="user-info">
@@ -28,64 +6,27 @@
     </div>
   </header>
 
-  <%# ==== 目標（任意・仮） ==== %>
-  <section class="goal-section">
-    <h2>今月の目標：間食をやめる！</h2>
-  </section>
+  <%= render "shared/calendar",
+             current_month: @month,
+             prev_month: @prev_month,
+             next_month: @next_month,
+             first_wday: @first_wday,
+             last_day: @last_day,
+             base_path: meal_records_path %>
 
-  <%# ==== カレンダー ==== %>
-  <div class="calendar-header">
-    <%= link_to "◀︎", root_path(year: @prev_month.year, month: @prev_month.month), class: "month-nav" %>
-    <h3><%= @month.strftime("%Y年 %-m月") %></h3>
-  <%= link_to "▶︎", root_path(year: @next_month.year, month: @next_month.month), class: "month-nav" %>
-  </div>
-
-  <div id="calendar"
-     class="calendar"
-     data-year="<%= @month.year %>"
-     data-month="<%= @month.month %>">
-
-  <!-- 曜日ヘッダ -->
-  <div class="day-name">日</div><div class="day-name">月</div><div class="day-name">火</div>
-  <div class="day-name">水</div><div class="day-name">木</div><div class="day-name">金</div><div class="day-name">土</div>
-
-  <!-- 先頭の空マス -->
-  <% @first_wday.times do %>
-    <div class="empty"></div>
-  <% end %>
-
-  <!-- 日付セル -->
-  <% 1.upto(@last_day) do |d| %>
-    <% date_obj = Date.new(@month.year, @month.month, d) %>
-    <% is_today = (date_obj == Time.zone.today) %>
-    <div class="day-cell <%= 'today' if is_today %>" data-day="<%= d %>">
-      <span class="day-number"><%= d %></span>
-    </div>
-  <% end %>
-</div>
-
-  <%# ==== アクション ==== %>
-  <div class="actions">
-    <a href="#" class="action-button" id="recordButton">今日の食事を記録する</a>
-  </div>
-
-  <%# ==== （任意）新着コメントのエリア（仮） ==== %>
-  <%# 実データに接続したら差し替え %>
+  <%# 新着コメント（任意） %>
   <section class="comment-section">
     <p><strong>サポーターからの新着コメント🔔</strong></p>
     <% if @latest_comment.present? %>
       <p>
-        <%= @latest_comment.user.last_name_with_san %>：
+        <%= @latest_comment.user.last_name %>さん：
         「<%= @latest_comment.body %>」
+        <small><%= l(@latest_comment.created_at, format: :short) %></small>
       </p>
-      <small><%= l(@latest_comment.created_at, format: :short) %></small>
     <% else %>
       <p>まだコメントはありません</p>
     <% end %>
   </section>
-
-  <%# タブバーに被らない余白（共通タブバー使用時） %>
-  <div style="height: 80px"></div>
 </div>
 
 <%# ====== 簡易スタイル（MVP用／後でCSSに切り出し） ====== %>
