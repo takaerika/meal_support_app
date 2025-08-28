@@ -1,0 +1,2 @@
+module Supporter::MealRecordsHelper
+end

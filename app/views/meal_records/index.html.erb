@@ -1,14 +1,16 @@
-<h2 class="page-title"><%= @date.strftime("%Y/%m/%d") %> の食事記録</h2>
+<% if @date.present? %>
+  <h2 class="page-title"><%= @date.strftime("%Y/%m/%d") %> の食事記録</h2>
+<% else %>
+  <h2 class="page-title"><%= @month.strftime("%Y年%-m月") %> の食事記録</h2>
+<% end %>
 
 <ul class="meal-list">
   <% @records.each do |r| %>
-
     <li>
       <%= link_to "#{I18n.t("activerecord.enums.meal_record.slot.#{r.slot}")}：#{truncate(r.text, length: 30)}", r %>
-      （<%= link_to "編集", edit_meal_record_path(r) %>）
-
-   
-
+      <% if @date.present? %>
+        （<%= link_to "編集", edit_meal_record_path(r) %>）
+      <% end %>
     </li>
   <% end %>
 </ul>

@@ -1,0 +1,65 @@
+<% base_path ||= ->(opts = {}) { root_path(opts) } %>
+<% current_month ||= Date.today.beginning_of_month %>
+<% prev_month   ||= (current_month << 1) %>
+<% next_month   ||= (current_month >> 1) %>
+<% first_wday   ||= current_month.wday %>
+<% last_day     ||= (current_month.next_month - 1).day %>
+
+<div class="calendar-header">
+  <%= link_to "◀︎", "#{base_path}?year=#{prev_month.year}&month=#{prev_month.month}", class: "month-nav" %>
+  <h3><%= current_month.strftime("%Y年 %-m月") %></h3>
+  <%= link_to "▶︎", "#{base_path}?year=#{next_month.year}&month=#{next_month.month}", class: "month-nav" %>
+</div>
+
+<div id="calendar"
+   class="calendar"
+   data-year="<%= current_month.year %>"
+   data-month="<%= current_month.month %>"
+   data-base-path="<%= base_path %>">
+   
+  <!-- 曜日ヘッダ -->
+  <% %w(日 月 火 水 木 金 土).each do |day| %>
+    <div class="day-name"><%= day %></div>
+  <% end %>
+
+  <!-- 先頭の空マス -->
+  <% first_wday.times do %>
+    <div class="empty"></div>
+  <% end %>
+
+  <!-- 日付セル -->
+  <% 1.upto(last_day) do |d| %>
+    <% date_obj = Date.new(current_month.year, current_month.month, d) %>
+    <% is_today = (date_obj == Time.zone.today) %>
+    <div class="day-cell <%= 'today' if is_today %>" data-day="<%= d %>">
+      <span class="day-number"><%= d %></span>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  .container { max-width: 820px; margin: 0 auto; background:#fff; padding:16px; border-radius:8px; }
+  .header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:16px; }
+  .header h1 { font-size:20px; margin:0; color:#2c5e46; }
+  .goal-section { background:#e6f3ed; padding:12px; border-radius:8px; margin-bottom:16px; }
+  .goal-section h2 { margin:0; font-size:16px; color:#2c5e46; }
+
+  .calendar-header { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:8px; }
+  .calendar-header h3 { margin:0; }
+  .month-nav { text-decoration:none; font-size:18px; padding:4px 8px; }
+
+  .calendar { display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; }
+  .day-name { font-weight:bold; text-align:center; background:transparent; border:none; }
+  .empty { background:transparent; }
+
+  .day-cell { padding:10px; background:#f9f9f9; border:1px solid #ddd; border-radius:6px; cursor:pointer; min-height:56px; position:relative; }
+  .day-cell:hover { background:#f1f5f1; }
+  .day-cell.today { background:#a0d4b5; color:#fff; font-weight:bold; }
+  .day-number { position:absolute; top:6px; right:8px; font-size:12px; }
+
+  .actions { text-align:center; margin-top:18px; }
+  .action-button { display:inline-block; padding:12px 20px; background:#4CAF50; color:#fff; border-radius:9999px; text-decoration:none; font-weight:700; }
+  .action-button:hover { background:#45a049; }
+
+  .comment-section { margin-top:18px; padding:12px; background:#fffbeb; border:1px solid #fdd835; border-radius:8px; }
+</style>
