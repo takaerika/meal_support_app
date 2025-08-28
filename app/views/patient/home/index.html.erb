@@ -29,6 +29,11 @@
   </section>
 </div>
 
+<!-- フローティングボタン -->
+<%= link_to "＋ 今日の食事",
+            new_meal_record_path(date: Date.current),
+            class: "floating-button" %>
+
 <%# ====== 簡易スタイル（MVP用／後でCSSに切り出し） ====== %>
 <style>
   .container { max-width: 820px; margin: 0 auto; background:#fff; padding:16px; border-radius:8px; }
@@ -55,4 +60,22 @@
   .action-button:hover { background:#45a049; }
 
   .comment-section { margin-top:18px; padding:12px; background:#fffbeb; border:1px solid #fdd835; border-radius:8px; }
+  .floating-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #4CAF50;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 14px 20px;
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000; /* 常に前面 */
+}
+
+.floating-button:hover {
+  background: #45a049;
+}
 </style>
