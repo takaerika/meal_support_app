@@ -1,3 +1,15 @@
-<h1>サポーター マイページ（仮）</h1>
-<p><%= current_user.last_name %> <%= current_user.first_name %> さん、こんにちは。</p>
-<p>ここに「患者一覧」へのリンク等を置いていきます。</p>
+<h1>担当患者一覧</h1>
+
+<div>
+  <label>並び替え:</label>
+  <%= select_tag :sort, options_for_select([["名前順", "name"], ["更新順", "recent"]]) %>
+</div>
+
+<ul>
+  <% @patients.each do |p| %>
+    <li>
+     <%= link_to "#{p.last_name} #{p.first_name}", supporter_patient_path(p) %>
+      （最終更新: <%= p.meal_records.order(updated_at: :desc).first&.updated_at&.strftime("%Y/%m/%d %H:%M") || "記録なし" %>）
+    </li>
+  <% end %>
+</ul>
