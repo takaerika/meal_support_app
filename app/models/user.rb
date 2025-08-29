@@ -19,7 +19,12 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
 
   validates :first_name, :last_name, presence: true
+  with_options if: :patient? do
+    validates :last_name_kana,  presence: true, format: { with: /\A[ァ-ヶー　]+\z/, message: "はカタカナで入力してください" }
+    validates :first_name_kana, presence: true, format: { with: /\A[ァ-ヶー　]+\z/ }
+  end
 
+  before_validation :normalize_kana
   after_commit :ensure_invite_code!, on: :create
 
   def ensure_invite_code!
@@ -36,4 +41,14 @@ class User < ApplicationRecord
   
   private
   def normalize_email; self.email = email.to_s.downcase.strip; end
+
+  def normalize_kana
+    %i[last_name_kana first_name_kana].each do |attr|
+      next unless self[attr].present?
+      s = self[attr].to_s.strip
+      # ひらがな → カタカナ / 全角スペースの整形
+      s = s.tr('ぁ-ん', 'ァ-ン').gsub(/\s+/, ' ')
+      self[attr] = s
+    end
+  end
 end

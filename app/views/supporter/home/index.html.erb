@@ -1,15 +1,23 @@
 <h1>担当患者一覧</h1>
 
-<div>
+<%= form_with url: supporter_home_path, method: :get, local: true do %>
   <label>並び替え:</label>
-  <%= select_tag :sort, options_for_select([["名前順", "name"], ["更新順", "recent"]]) %>
-</div>
+  <%= select_tag :sort,
+        options_for_select([["更新順","recent"],["名前順","name"]],
+                           params[:sort].presence || "recent"),
+        onchange: "this.form.submit()" %>
+<% end %>
 
 <ul>
   <% @patients.each do |p| %>
     <li>
-     <%= link_to "#{p.last_name} #{p.first_name}", supporter_patient_path(p) %>
-      （最終更新: <%= p.meal_records.order(updated_at: :desc).first&.updated_at&.strftime("%Y/%m/%d %H:%M") || "記録なし" %>）
+      <%= link_to "#{p.last_name} #{p.first_name}", supporter_patient_path(p) %>
+      （最終更新:
+        <%= (
+              p.try(:last_meal_updated_at) ||       # SQLで付けた別名があれば使う
+              p.meal_records.order(updated_at: :desc).first&.updated_at  # 保険
+            )&.strftime("%Y/%m/%d %H:%M") || "記録なし" %>
+      ）
     </li>
   <% end %>
 </ul>
