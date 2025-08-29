@@ -1,0 +1,8 @@
+.page-container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 12px;
+}
+
+/* タブバーが fixed のときは下に余白を確保（高さに合わせて調整） */
+// .page-container { padding-bottom: 72px; }
