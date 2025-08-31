@@ -109,3 +109,5 @@
   border: 1px solid #fdd835;
   border-radius: 8px;
 }
+.comment-link { text-decoration: none; color: inherit; display: block; }
+.comment-link:hover { text-decoration: underline; }

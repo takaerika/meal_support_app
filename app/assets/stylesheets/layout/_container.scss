@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 12px;
 }
+body.has-tabbar{
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+}
 
-/* タブバーが fixed のときは下に余白を確保（高さに合わせて調整） */
-// .page-container { padding-bottom: 72px; }

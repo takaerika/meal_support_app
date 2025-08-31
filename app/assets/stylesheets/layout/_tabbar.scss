@@ -1,29 +1,24 @@
-.tabbar {
-  /* 通常は sticky（ビューポート下に沿う） */
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
+.tabbar{
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--tabbar-height);
   background: #fff;
   border-top: 1px solid #eee;
   display: flex;
-  gap: 6px;
+  align-items: center;
   justify-content: space-around;
-  padding: 8px 10px;
-
-  /* 追記した2行：タブバー高さの確保＆重なり順 */
-  min-height: var(--tabbar-height);
+  gap: 6px;
+  padding: 0 10px;                  
   z-index: 998;
+  /* iPhoneのホームバー回避（見た目の余白。高さは変えない） */
+  padding-bottom: env(safe-area-inset-bottom);
 }
-
-.tabbar a {
+.tabbar a{
   flex: 1;
   text-align: center;
-  padding: 10px;
+  padding: 10px 0;                  /* 縦のタップ余白はここで確保 */
   border-radius: 12px;
 }
-
-.tabbar a.active { font-weight: 700; }
+.tabbar a.active{ font-weight: 700; }
 
 .safe-area { padding-bottom: env(safe-area-inset-bottom); }

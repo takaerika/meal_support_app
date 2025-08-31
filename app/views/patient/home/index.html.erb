@@ -1,4 +1,4 @@
-  <div class="page-container">
+<div class="page-container">
   <header class="header">
     <h1>食事のきろく</h1>
     <div class="user-info">
@@ -6,21 +6,29 @@
     </div>
   </header>
 
-  <%= render "shared/calendar",
-  current_month: @month, prev_month: @prev_month, next_month: @next_month,
-  first_wday: @first_wday, last_day: @last_day,
-  month_path: ->(opts = {}) { root_path(opts) },
-  day_path:   ->(opts = {}) { meal_records_path(opts) } %>
+ <%= render "shared/calendar",
+  current_month: @month,
+  prev_month: @prev_month,
+  next_month: @next_month,
+  first_wday: @first_wday,
+  last_day: @last_day,
+  month_path: ->(opts = {}) { url_for({ controller: "/patient/home", action: :index, only_path: true }.merge(opts)) },
+  day_path:   ->(opts = {}) { meal_records_path(opts) }
+  %>
 
-  <!-- 新着コメント（カレンダーの“外”に置く） -->
+  <!-- 新着コメント -->
   <section class="comment-section">
     <p><strong>サポーターからの新着コメント🔔</strong></p>
+
     <% if @latest_comment.present? %>
-      <p>
-        <%= @latest_comment.user.last_name %>さん：
-        「<%= @latest_comment.body %>」
-        <small><%= l(@latest_comment.created_at, format: :short) %></small>
-      </p>
+      <%= link_to meal_record_path(@latest_comment.meal_record, anchor: "comment-#{@latest_comment.id}"),
+                  class: "comment-link" do %>
+        <p>
+          <%= @latest_comment.user.last_name %>さん：
+          「<%= truncate(@latest_comment.body, length: 60) %>」
+          <small><%= l(@latest_comment.created_at, format: :short) %></small>
+        </p>
+      <% end %>
     <% else %>
       <p>まだコメントはありません</p>
     <% end %>
@@ -28,8 +36,6 @@
 
   <!-- フローティングボタン -->
   <%= link_to "＋ 今日の食事",
-            new_meal_record_path(date: Date.current),
-            class: "floating-button" %>
+              new_meal_record_path(date: Date.current),
+              class: "floating-button" %>
 </div>
-
-
