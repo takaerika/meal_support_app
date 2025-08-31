@@ -9,13 +9,17 @@
     <ul>
       <li><%= link_to "プロフィール編集（名前・メール・パスワード）", edit_user_registration_path, class: "touch" %></li>
       <li>
-        <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: "touch" %>
-      </li>
-      <li style="margin-top:6px">
-        <%= link_to "退会（アカウント削除）", "#", class: "touch", style: "color:#ef4444",
-              data: { turbo_confirm: "本当に退会しますか？（90日後に物理削除）" } %>
-        <!-- 退会画面は今後実装。今はリンクだけ置く最小構成 -->
-      </li>
+        <%= link_to "ログアウト",
+              destroy_user_session_path,
+              data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" },
+              class: "touch" %>
+       </li>
+      <li>
+        <%= link_to "退会する",
+              account_path,
+              data: { turbo_method: :delete, turbo_confirm: "本当に退会しますか？" },
+              class: "touch" %>
+       </li>
     </ul>
   </div>
 

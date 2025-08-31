@@ -18,3 +18,4 @@ ja:
       invalid: "メールアドレスまたはパスワードが正しくありません"
       not_found_in_database: "メールアドレスまたはパスワードが正しくありません"
       unauthenticated: "ログインしてください"
+      deleted_account: "退会済みのアカウントです。"
