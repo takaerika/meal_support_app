@@ -1,20 +1,7 @@
-<%# ==== どっちでもOKにする（Proc or String） ==== %>
-<%
-to_url = ->(pathish, opts = {}) do
-  if pathish.respond_to?(:call)
-    pathish.call(opts)
-  else
-    q = opts.compact.to_query
-    q.present? ? "#{pathish}#{pathish.to_s.include?('?') ? '&' : '?'}#{q}" : pathish.to_s
-  end
-end
-%>
-
-<%# ==== デフォルト（未指定時のフォールバック） ==== %>
+<%# ===== デフォルトと受け取り ===== %>
 <% month_path ||= ->(opts = {}) { root_path(opts) } %>
 <% day_path   ||= ->(opts = {}) { root_path(opts) } %>
 
-<%# ==== 月情報 ==== %>
 <% current_month ||= Date.today.beginning_of_month %>
 <% prev_month   ||= (current_month << 1) %>
 <% next_month   ||= (current_month >> 1) %>
@@ -23,22 +10,17 @@ end
 
 <div class="calendar-header">
   <%= link_to "◀︎",
-      to_url.(month_path, year: prev_month.year, month: prev_month.month),
-      class: "month-nav" %>
+              month_path.(year: prev_month.year, month: prev_month.month),
+              class: "month-nav" %>
   <h3><%= current_month.strftime("%Y年 %-m月") %></h3>
   <%= link_to "▶︎",
-      to_url.(month_path, year: next_month.year, month: next_month.month),
-      class: "month-nav" %>
+              month_path.(year: next_month.year, month: next_month.month),
+              class: "month-nav" %>
 </div>
 
-<div id="calendar"
-     class="calendar"
-     data-year="<%= current_month.year %>"
-     data-month="<%= current_month.month %>"
-     data-base-path="<%= to_url.(day_path) %>">
-
-  <% %w(日 月 火 水 木 金 土).each do |day| %>
-    <div class="day-name"><%= day %></div>
+<div class="calendar">
+  <% %w(日 月 火 水 木 金 土).each do |dayname| %>
+    <div class="day-name"><%= dayname %></div>
   <% end %>
 
   <% first_wday.times do %>
@@ -48,8 +30,11 @@ end
   <% 1.upto(last_day) do |d| %>
     <% date_obj = Date.new(current_month.year, current_month.month, d) %>
     <% is_today = (date_obj == Time.zone.today) %>
-    <div class="day-cell <%= 'today' if is_today %>" data-day="<%= d %>">
+
+    <%= link_to day_path.(date: date_obj.to_s),
+                class: "day-cell #{'today' if is_today}",
+                data: { day: d } do %>
       <span class="day-number"><%= d %></span>
-    </div>
+    <% end %>
   <% end %>
 </div>
