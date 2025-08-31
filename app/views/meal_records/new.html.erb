@@ -24,6 +24,11 @@
     <%= f.file_field :photo, accept: "image/jpeg,image/png" %>
   </div>
 
+  <div class="form-group">
+    <label>備考</label>
+    <%= f.text_field :note, class: "form-control", placeholder: "外食 / 少なめ など" %>
+  </div>
+
   <div style="margin-top:8px">
     <%= f.submit "登録する" %>
   </div>
