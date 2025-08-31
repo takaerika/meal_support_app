@@ -1,10 +1,8 @@
 class Supporter::HomeController < Supporter::BaseController
-  before_action :authenticate_user!
-  before_action :require_supporter!
-
   def index
-  sort  = params[:sort].presence || "recent"
-  scope = current_user.patients
+    sort  = params[:sort].presence || "recent"
+    scope = current_user.patients.alive 
+
 
   @patients =
     case sort

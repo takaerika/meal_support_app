@@ -3,6 +3,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   enum role: { patient: 0, supporter: 1 }
+  scope :alive, -> { where(deleted_at: nil) }
+  scope :deleted, -> { where.not(deleted_at: nil) }
 
   # 招待コード（サポーター側）
   has_one  :invite_code, foreign_key: :supporter_id, dependent: :destroy
@@ -17,7 +19,6 @@ class User < ApplicationRecord
   has_many :supporters, through: :support_links_as_patient, source: :supporter
   has_many :meal_records, foreign_key: :patient_id, dependent: :destroy
   has_many :comments, dependent: :destroy
-
   validates :first_name, :last_name, presence: true
   with_options if: :patient? do
     validates :last_name_kana,  presence: true, format: { with: /\A[ァ-ヶー　]+\z/, message: "はカタカナで入力してください" }
@@ -37,6 +38,18 @@ class User < ApplicationRecord
   
   def last_name_with_san
     "#{last_name}さん"
+  end
+
+  def soft_delete!
+    update!(deleted_at: Time.current)
+  end
+
+  def active_for_authentication?
+    super && deleted_at.nil?
+  end
+
+  def inactive_message
+    deleted_at? ? :deleted_account : super
   end
   
   private

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resource :settings, only: [:show]  
   resources :connections, only: [:create, :destroy]
+  resource :account, only: :destroy
   resources :meal_records, only: [:index, :new, :create, :show, :edit, :update] do
      resources :comments, only: [:create, :destroy]
   end
