@@ -36,7 +36,7 @@
 <% if @record.comments.any? %>
   <ul class="comment-list">
     <% @record.comments.order(created_at: :desc).each do |c| %>
-      <li class="comment-item">
+    <li class="comment-item" id="comment-<%= c.id %>">
         <div class="comment-meta">
           <strong><%= c.user.full_name %></strong>
           <span class="comment-date"><%= c.created_at.in_time_zone("Asia/Tokyo").strftime("%Y/%m/%d %H:%M") %></span>

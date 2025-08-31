@@ -9,7 +9,6 @@ class Supporter::HomeController < Supporter::BaseController
   @patients =
     case sort
     when "name"
-      # ふりがながある人を優先して並べ、無い人は漢字でフォールバック
       scope.order(
         Arel.sql("CASE WHEN users.last_name_kana IS NULL OR users.last_name_kana = '' THEN 1 ELSE 0 END ASC"),
         :last_name_kana, :first_name_kana, :last_name, :first_name
@@ -23,5 +22,17 @@ class Supporter::HomeController < Supporter::BaseController
     else
       scope.order(:last_name, :first_name)
     end
-   end
+   patient_ids = @patients.map(&:id)
+   raw = Comment.joins(:meal_record)
+               .where(meal_records: { patient_id: patient_ids })
+               .select('comments.*, meal_records.patient_id AS patient_id')
+               .order('comments.created_at DESC')
+
+  @latest_comments_by_patient = {}
+  raw.each do |c|
+    pid = c.read_attribute(:patient_id)
+    @latest_comments_by_patient[pid] ||= c  
+    break if @latest_comments_by_patient.size == patient_ids.size
+  end
+ end
 end
