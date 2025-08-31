@@ -1,0 +1,36 @@
+:root{
+  /* neutral */
+  --bg:#f6f7f9;
+  --card:#ffffff;
+  --line:#eaecef;
+  --text:#1f2937;
+  --muted:#6b7280;
+
+  /* brand（初期テーマ：Matcha） */
+  --primary:#2c5e46;
+  --accent:#4caf50;
+  --warn:#f6d867;
+  --danger:#ef4444;
+
+  /* radius / spacing */
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:16px;
+
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-6:24px;
+
+  /* elevation */
+  --shadow-1: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-2: 0 6px 16px rgba(0,0,0,.10);
+
+  /* layout */
+  --tabbar-height: 60px;
+}
+
+/* 見出しの既定（流体スケール） */
+.h1{ font-size: clamp(18px, 2.4vw, 22px); font-weight: 800; letter-spacing:.2px; }
+.h2{ font-size: clamp(16px, 2vw, 18px);  font-weight: 700; }

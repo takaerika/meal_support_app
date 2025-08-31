@@ -1,24 +1,14 @@
 .tabbar{
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
+  position: fixed; left: 0; right: 0; bottom: 0;
   height: var(--tabbar-height);
-  background: #fff;
-  border-top: 1px solid #eee;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  gap: 6px;
-  padding: 0 10px;                  
+  background: #fff; border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 0 10px;
   z-index: 998;
-  /* iPhoneのホームバー回避（見た目の余白。高さは変えない） */
-  padding-bottom: env(safe-area-inset-bottom);
 }
-.tabbar a{
-  flex: 1;
-  text-align: center;
-  padding: 10px 0;                  /* 縦のタップ余白はここで確保 */
-  border-radius: 12px;
-}
-.tabbar a.active{ font-weight: 700; }
+.tabbar a{ flex:1; text-align:center; padding:10px 0; border-radius: 12px; }
+.tabbar a.active{ font-weight:700; }
 
-.safe-area { padding-bottom: env(safe-area-inset-bottom); }
+body.has-tabbar{
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+}

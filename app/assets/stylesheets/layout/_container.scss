@@ -1,8 +1,9 @@
-.page-container {
+.page-container{
   max-width: 760px;
   margin: 0 auto;
-  padding: 12px;
+  padding: var(--space-4);
 }
+
 body.has-tabbar{
   padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
 }

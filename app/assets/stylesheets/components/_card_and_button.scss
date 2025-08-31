@@ -1,8 +1,9 @@
-.card {
+.card{
   background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
-  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  padding: var(--space-4);
 }
 
 .btn {

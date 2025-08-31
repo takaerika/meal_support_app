@@ -1,113 +1,46 @@
-.page-container {
-  max-width: 820px;
-  margin: 0 auto;
-  background: #fff;
-  padding: 16px;
-  border-radius: 8px;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  padding: var(--space-2) 0 var(--space-3);
+  margin-bottom: var(--space-4);
 
   h1 {
-    font-size: 20px;
     margin: 0;
-    color: #2c5e46;
+    font-size: clamp(18px, 2.4vw, 22px);
+    letter-spacing: .2px;
+    color: var(--primary);
+  }
+
+  .user-info {
+    color: var(--muted);
+    font-size: 14px;
   }
 }
 
+/* ゴール（使っているなら残す） */
 .goal-section {
-  background: #e6f3ed;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
+  background: color-mix(in srgb, var(--accent) 12%, #fff);
+  padding: var(--space-3);
+  border-radius: var(--r-md);
+  margin-bottom: var(--space-4);
 
   h2 {
     margin: 0;
     font-size: 16px;
-    color: #2c5e46;
+    color: var(--primary);
   }
 }
 
-/* カレンダー部分（共通componentsにもまとめられる） */
-.calendar-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 8px;
-
-  h3 { margin: 0; }
-}
-.month-nav {
-  text-decoration: none;
-  font-size: 18px;
-  padding: 4px 8px;
-}
-
-.calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-}
-.day-name {
-  font-weight: bold;
-  text-align: center;
-  background: transparent;
-  border: none;
-}
-.empty {
-  background: transparent;
-}
-.day-cell {
-  padding: 10px;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  cursor: pointer;
-  min-height: 56px;
-  position: relative;
-}
-.day-cell:hover { background: #f1f5f1; }
-.day-cell.today {
-  background: #a0d4b5;
-  color: #fff;
-  font-weight: bold;
-}
-.day-number {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 12px;
-}
-
-.actions {
-  text-align: center;
-  margin-top: 18px;
-}
-.action-button {
-  display: inline-block;
-  padding: 12px 20px;
-  background: #4CAF50;
-  color: #fff;
-  border-radius: 9999px;
-  text-decoration: none;
-  font-weight: 700;
-}
-.action-button:hover { background: #45a049; }
-
-/* 新着コメントセクション */
+/* 新着コメントカード */
 .comment-section {
-  margin-top: 18px;
-  padding: 12px;
-  background: #fffbeb;
-  border: 1px solid #fdd835;
-  border-radius: 8px;
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: #fffbe6; /* やや柔らかい黄色。テーマ化したいなら color-mixでもOK */
+  border: 1px solid var(--warn);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
 }
 .comment-link { text-decoration: none; color: inherit; display: block; }
 .comment-link:hover { text-decoration: underline; }

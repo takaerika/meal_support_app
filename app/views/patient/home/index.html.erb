@@ -18,13 +18,13 @@
 
   <!-- 新着コメント -->
   <section class="comment-section">
-    <p><strong>サポーターからの新着コメント🔔</strong></p>
+    <p><strong>サポーターからの新着コメント</strong></p>
 
     <% if @latest_comment.present? %>
       <%= link_to meal_record_path(@latest_comment.meal_record, anchor: "comment-#{@latest_comment.id}"),
                   class: "comment-link" do %>
         <p>
-          <%= @latest_comment.user.last_name %>さん：
+          <%= @latest_comment.user.last_name %>さん
           「<%= truncate(@latest_comment.body, length: 60) %>」
           <small><%= l(@latest_comment.created_at, format: :short) %></small>
         </p>
