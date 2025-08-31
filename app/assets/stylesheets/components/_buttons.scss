@@ -1,15 +1,15 @@
 .floating-button {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  right: 16px;
+  bottom: calc(var(--tabbar-height, 60px) + env(safe-area-inset-bottom) + 16px);
   background: #4CAF50;
-  color: white;
+  color: #fff;
   font-size: 16px;
   font-weight: bold;
   padding: 14px 20px;
   border-radius: 9999px;
   text-decoration: none;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  z-index: 1000;
+  z-index: 997; /* タブバー(998)より下にしてタブ優先 */
 }
 .floating-button:hover { background: #45a049; }

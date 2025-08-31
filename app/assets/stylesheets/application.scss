@@ -5,13 +5,13 @@
 @import "layout/container";
 @import "layout/tabbar";
 
-/* Components */
+/* Components ← ここに buttons を入れる！ */
 @import "components/card_and_button";
 @import "components/calendar";
 @import "components/buttons";
 
-/* Pages */
+/* Pages（最後） */
 @import "pages/patient/home";
-@import "pages/meal_records/edit";
 @import "pages/meal_records/index";
+@import "pages/meal_records/edit";
 @import "pages/meal_records/show";

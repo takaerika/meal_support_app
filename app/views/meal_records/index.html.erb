@@ -1,36 +1,34 @@
 <% if @date.present? %>
-  <h2 class="page-title"><%= @date.strftime("%Y/%m/%d") %> の食事記録</h2>
-<% else %>
-  <h2 class="page-title"><%= @month.strftime("%Y年%-m月") %> の食事記録</h2>
-<% end %>
+  <!-- 日別の食事記録リスト -->
+  <h2><%= @date.strftime("%Y/%m/%d") %> の食事記録</h2>
 
-<ul class="meal-list">
-  <% @records.each do |r| %>
-    <li>
-      <%= link_to "#{I18n.t("activerecord.enums.meal_record.slot.#{r.slot}")}：#{truncate(r.text, length: 30)}", r %>
-      <% if @date.present? %>
-        （<%= link_to "編集", edit_meal_record_path(r) %>）
+  <% if @records.any? %>
+    <ul class="meal-list">
+      <% @records.each do |r| %>
+        <li class="meal-item">
+          <%= link_to r, class: "meal-link" do %>
+            <span class="meal-slot-badge">
+              <%= t("activerecord.enums.meal_record.slot.#{r.slot}") %>
+            </span>
+
+            <span class="meal-text"><%= meal_summary(r) %></span>
+          <% end %>
+        </li>
       <% end %>
-    </li>
+    </ul>
+  <% else %>
+    <p>記録はありません</p>
   <% end %>
-</ul>
 
-<style>
-.page-title { margin: 8px 0 12px; font-size: 18px; font-weight: 700; }
-.meal-list { list-style: none; padding-left: 0; margin: 0; }
-.meal-item { margin: 10px 0; }
-.meal-link {
-  display: flex; align-items: center; gap: 10px;
-  text-decoration: none; color: #333; padding: 10px 12px;
-  background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
-}
-.meal-link:hover { background: #f9fafb; }
-.meal-slot-badge {
-  display: inline-block; min-width: 3em; text-align: center;
-  font-weight: 700; font-size: 14px; color: #2c5e46;
-  background: #e6f3ed; padding: 4px 10px; border-radius: 999px;
-}
-.meal-text { font-size: 14px; color: #555; flex: 1; }
-.meal-has-photo { font-size: 16px; opacity: 0.8; }
-.nav-actions { margin-top: 16px; }
-</style>
+  <div class="nav-actions">
+    <%= link_to "カレンダーに戻る", root_path(year: @date.year, month: @date.month) %>
+  </div>
+
+<% else %>
+  <!-- カレンダー -->
+  <%= render "shared/calendar",
+    current_month: @month, prev_month: @prev_month, next_month: @next_month,
+    first_wday: @first_wday, last_day: @last_day,
+    month_path: ->(opts = {}) { meal_records_path(opts) },
+    day_path:   ->(opts = {}) { meal_records_path(opts) } %>
+<% end %>
