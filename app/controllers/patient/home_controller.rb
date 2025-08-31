@@ -2,7 +2,7 @@ class Patient::HomeController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_patient!
 
-  def index
+ def index
     today = Date.today
     year  = params[:year].presence&.to_i || today.year
     month = params[:month].presence&.to_i || today.month
@@ -13,9 +13,10 @@ class Patient::HomeController < ApplicationController
     @first_wday = @month.wday
     @last_day   = (@month.next_month - 1).day
 
-    # 新着コメントを患者トップに表示するならここで
-    @latest_comment = current_user.meal_records.joins(:comments)
-                           .order("comments.created_at DESC").first&.comments&.last
+    @records = current_user.meal_records.where(eaten_on: @month..@month.end_of_month)
+
+    # 新着コメントなどもここでセット
+    @latest_comment = current_user.comments.last
   end
 
   private

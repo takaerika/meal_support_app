@@ -1,0 +1,75 @@
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  h3 { margin: 0; }
+}
+
+.month-nav {
+  text-decoration: none;
+  font-size: 18px;
+  padding: 4px 8px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.day-name {
+  font-weight: bold;
+  text-align: center;
+  background: transparent;
+  border: none;
+}
+
+.empty {
+  background: transparent;
+}
+
+.day-cell {
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  min-height: 56px;
+  position: relative;
+
+  &:hover { background: #f1f5f1; }
+
+  &.today {
+    background: #a0d4b5;
+    color: #fff;
+    font-weight: bold;
+  }
+}
+
+.day-number {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 12px;
+}
+
+/* カレンダー下にボタン置く場合 */
+.actions {
+  text-align: center;
+  margin-top: 18px;
+}
+.action-button {
+  display: inline-block;
+  padding: 12px 20px;
+  background: #4CAF50;
+  color: #fff;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-weight: 700;
+
+  &:hover { background: #45a049; }
+}

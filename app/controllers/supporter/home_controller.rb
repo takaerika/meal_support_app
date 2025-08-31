@@ -1,15 +1,27 @@
-class Supporter::HomeController < ApplicationController
+class Supporter::HomeController < Supporter::BaseController
   before_action :authenticate_user!
   before_action :require_supporter!
 
   def index
-    # 自分に紐づく患者を一覧表示
-    @patients = current_user.patients.includes(:meal_records)
-  end
+  sort  = params[:sort].presence || "recent"
+  scope = current_user.patients
 
-  private
-
-  def require_supporter!
-    redirect_to root_path, alert: "サポーターのみ利用できます" unless current_user.supporter?
-  end
+  @patients =
+    case sort
+    when "name"
+      # ふりがながある人を優先して並べ、無い人は漢字でフォールバック
+      scope.order(
+        Arel.sql("CASE WHEN users.last_name_kana IS NULL OR users.last_name_kana = '' THEN 1 ELSE 0 END ASC"),
+        :last_name_kana, :first_name_kana, :last_name, :first_name
+      )
+    when "recent"
+      scope
+        .left_joins(:meal_records)
+        .select('users.*, MAX(meal_records.updated_at) AS last_meal_updated_at')
+        .group('users.id')
+        .order(Arel.sql('last_meal_updated_at IS NULL, last_meal_updated_at DESC'))
+    else
+      scope.order(:last_name, :first_name)
+    end
+   end
 end

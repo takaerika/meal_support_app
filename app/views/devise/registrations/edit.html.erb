@@ -42,6 +42,16 @@
   </div>
 
   <div class="field">
+    <%= f.label :last_name_kana, "姓（カナ）" %>
+    <%= f.text_field :last_name_kana, class: "form-control", placeholder: "ヤマダ" %>
+   </div>
+
+   <div class="field">
+    <%= f.label :first_name_kana, "名（カナ）" %>
+    <%= f.text_field :first_name_kana, class: "form-control", placeholder: "タロウ" %>
+   </div>
+
+  <div class="field">
     <%= f.label :role, "区分" %><br>
     <%= f.select :role,
                User.roles.keys.map { |r| [I18n.t("activerecord.enums.user.role.#{r}"), r] },
@@ -59,3 +69,4 @@
 <div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
 
 <%= link_to "Back", :back %>
+

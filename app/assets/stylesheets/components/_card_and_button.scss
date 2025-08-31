@@ -1,0 +1,15 @@
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  padding: 12px;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 16px; border-radius: 999px;
+  background: var(--brand-2); color: #fff; font-weight: 600;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-secondary { background: #e5e7eb; color: #111; }
