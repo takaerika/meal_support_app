@@ -17,7 +17,10 @@ class Supporter::PatientsController < Supporter::BaseController
 
   private
 
-  def set_patient
-    @patient = current_user.patients.find(params[:id])
+   def set_patient
+    @patient = current_user.patients.alive.find_by(id: params[:id])
+    return if @patient.present?
+
+    redirect_to supporter_home_path, alert: "該当の患者は存在しないか、退会済みです。"
   end
 end
