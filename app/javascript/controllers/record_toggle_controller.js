@@ -8,27 +8,36 @@ export default class extends Controller {
 
   connect() {
     this.frame = document.getElementById(this.frameIdValue)
-
-    // フレーム描画時に currentId を同期
     this.onFrameEvent = (e) => {
       if (e.target.id !== this.frameIdValue) return
-      this.syncCurrentIdFromFrame()
+      // 表示された詳細から currentId を同期
+      const marker = e.target.querySelector("[data-current-id]")
+      const id = marker ? String(marker.dataset.currentId || "") : ""
+      if (id) {
+        e.target.dataset.currentId = id
+        this.currentIdValue = id
+      } else {
+        delete e.target.dataset.currentId
+        this.currentIdValue = ""
+      }
       this.highlightActiveLink()
     }
-    document.addEventListener("turbo:frame-render", this.onFrameEvent)
     document.addEventListener("turbo:frame-load", this.onFrameEvent)
+    document.addEventListener("turbo:frame-render", this.onFrameEvent)
   }
 
   disconnect() {
-    document.removeEventListener("turbo:frame-render", this.onFrameEvent)
     document.removeEventListener("turbo:frame-load", this.onFrameEvent)
+    document.removeEventListener("turbo:frame-render", this.onFrameEvent)
   }
 
   toggle(e) {
-    e.preventDefault() // ← 常に自分で制御する
+    // JSが生きている時だけ「閉じる」を上書き
+    e.preventDefault()
+
     const link = e.currentTarget
     const clickedId = String(link.dataset.recordId || "")
-    const url = link.dataset.url
+    const url = link.getAttribute("href")
 
     if (!this.frame) this.frame = document.getElementById(this.frameIdValue)
     const currentId = String(this.frame?.dataset.currentId || this.currentIdValue || "")
@@ -41,33 +50,17 @@ export default class extends Controller {
       return
     }
 
-    // 別の項目 → フレームの src を切替（Turbo が読み込む）
+    // 別項目 → フレーム遷移（確実に置換）
     this.currentIdValue = clickedId
     this.frame.src = url
-    // 先にハイライト
     this.highlightActiveLink(clickedId)
   }
 
-  // helpers
   clearFrame() {
     if (!this.frame) return
-    // 表示を消す
     this.frame.innerHTML = ""
-    // 読み込みを解除
     this.frame.removeAttribute("src")
     delete this.frame.dataset.currentId
-  }
-
-  syncCurrentIdFromFrame() {
-    if (!this.frame) return
-    const marker = this.frame.querySelector("[data-current-id]")
-    const id = marker ? String(marker.dataset.currentId || "") : ""
-    if (id) {
-      this.frame.dataset.currentId = id
-      this.currentIdValue = id
-    } else {
-      delete this.frame.dataset.currentId
-    }
   }
 
   highlightActiveLink(id = (this.frame?.dataset.currentId || this.currentIdValue || "")) {
