@@ -1,29 +1,14 @@
-.tabbar {
-  /* 通常は sticky（ビューポート下に沿う） */
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  background: #fff;
-  border-top: 1px solid #eee;
-  display: flex;
-  gap: 6px;
-  justify-content: space-around;
-  padding: 8px 10px;
-
-  /* 追記した2行：タブバー高さの確保＆重なり順 */
-  min-height: var(--tabbar-height);
+.tabbar{
+  position: fixed; left: 0; right: 0; bottom: 0;
+  height: var(--tabbar-height);
+  background: #fff; border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 0 10px;
   z-index: 998;
 }
+.tabbar a{ flex:1; text-align:center; padding:10px 0; border-radius: 12px; }
+.tabbar a.active{ font-weight:700; }
 
-.tabbar a {
-  flex: 1;
-  text-align: center;
-  padding: 10px;
-  border-radius: 12px;
+body.has-tabbar{
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
 }
-
-.tabbar a.active { font-weight: 700; }
-
-.safe-area { padding-bottom: env(safe-area-inset-bottom); }

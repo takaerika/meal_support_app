@@ -1,9 +1,9 @@
 import { Application } from "@hotwired/stimulus"
+import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
 
-const application = Application.start()
-
-// Configure Stimulus development experience
+export const application = Application.start()
 application.debug = false
-window.Stimulus   = application
+window.Stimulus = application
 
-export { application }
+// controllers 配下の *_controller.js を自動登録
+eagerLoadControllersFrom("controllers", application)

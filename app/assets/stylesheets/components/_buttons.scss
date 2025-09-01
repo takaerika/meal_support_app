@@ -1,15 +1,18 @@
-.floating-button {
-  position: fixed;
-  right: 16px;
-  bottom: calc(var(--tabbar-height, 60px) + env(safe-area-inset-bottom) + 16px);
-  background: #4CAF50;
-  color: #fff;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 14px 20px;
-  border-radius: 9999px;
-  text-decoration: none;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  z-index: 997; /* タブバー(998)より下にしてタブ優先 */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding: var(--space-3) 16px; border-radius: 999px; font-weight: 700;
+  background: var(--accent); color:#fff; box-shadow: var(--shadow-1);
+  transition: transform .06s ease, opacity .15s ease;
 }
-.floating-button:hover { background: #45a049; }
+.btn:active{ transform: translateY(1px); }
+.btn-secondary{ background:var(--line); color:#111; }
+.btn-danger{ background: var(--danger); }
+
+/* FAB（タブを避ける） */
+.floating-button{
+  position: fixed; right:16px;
+  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 16px);
+  padding:14px 20px; border-radius:999px; color:#fff; font-weight:700;
+  background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 85%, #000 15%));
+  box-shadow: var(--shadow-2); z-index: 997;
+}

@@ -1,8 +1,11 @@
-.page-container {
+.page-container{
+  background-color: #fff;
   max-width: 760px;
   margin: 0 auto;
-  padding: 12px;
+  padding: var(--space-4);
 }
 
-/* タブバーが fixed のときは下に余白を確保（高さに合わせて調整） */
-// .page-container { padding-bottom: 72px; }
+body.has-tabbar{
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+}
+

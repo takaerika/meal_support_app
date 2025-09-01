@@ -17,14 +17,6 @@
               p.try(:last_meal_updated_at) ||
               p.meal_records.order(updated_at: :desc).first&.updated_at
             )&.strftime("%Y/%m/%d %H:%M") || "記録なし" %>）
-
-      <% if (c = @latest_comments_by_patient[p.id]) %>
-        <div class="latest-comment">
-          <%= link_to "最新コメント： 「#{truncate(c.body, length: 24)}」",
-                meal_record_path(c.meal_record, anchor: "comment-#{c.id}") %>
-          <small><%= l(c.created_at, format: :short) %></small>
-        </div>
-      <% end %>
     </li>
   <% end %>
 </ul>

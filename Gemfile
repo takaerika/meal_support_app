@@ -75,3 +75,5 @@ end
 
 gem 'devise'
 gem "sassc-rails"
+gem "rails-i18n" 
+gem "devise-i18n" 

@@ -11,13 +11,18 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+   <%
+    show_tabbar = user_signed_in? && !(defined?(hide_tabbar) && hide_tabbar)
+  %>
+  <body class="<%= 'has-tabbar' if show_tabbar %>">
     <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>
+
     <div class="page-container">
-    <%= yield %>
+      <%= yield %>
     </div>
-    <% unless defined?(hide_tabbar) && hide_tabbar %>
+
+    <% if show_tabbar %>
       <%= render "shared/tabbar" %>
     <% end %>
   </body>

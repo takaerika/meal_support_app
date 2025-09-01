@@ -1,72 +1,110 @@
+<%= turbo_frame_tag "record_detail" do %>
+  <div data-current-id="<%= @record.id %>" hidden></div>
+  <div class="record-show card">
+    <header class="record-header">
+      <h1 class="h1">食事記録</h1>
+      <div class="record-actions">
+        <% if current_user.patient? %>
+          <%= link_to "編集", edit_meal_record_path(@record), class: "btn btn-secondary" %>
+        <% end %>
+      </div>
+    </header>
 
-<h1>食事記録詳細</h1>
+    <section class="record-meta">
+      <div class="meta-item">
+        <span class="meta-label">日付</span>
+        <span class="meta-value"><%= @record.eaten_on.strftime("%Y/%m/%d") %></span>
+      </div>
 
-<p>日付：<%= @record.eaten_on %></p>
-<p>区分：<%= I18n.t("activerecord.enums.meal_record.slot.#{@record.slot}") %></p>
-<p>内容：<%= simple_format(@record.text) %></p>
+      <div class="meta-item">
+        <span class="meta-label">区分</span>
+        <span class="chip">
+          <%= t("activerecord.enums.meal_record.slot.#{@record.slot}") %>
+        </span>
+      </div>
 
-<% if @record.photo.attached? %>
-  <div class="meal-photo" style="margin:12px 0;">
-    <%= image_tag @record.photo,
-                  alt: "食事写真",
-                  style: "max-width:100%;height:auto;border-radius:8px;",
-                  loading: "lazy" %>
-    <div style="margin-top:6px;">
-      <%= link_to "画像を新しいタブで開く", url_for(@record.photo), target: "_blank", rel: "noopener" %>
-    </div>
-  </div>
-<% end %>
-
-<p>備考：<%= simple_format(@record.note) %></p>
-
-<div style="margin-top:12px;">
-  <% if current_user.patient? %>
-    <%= link_to "編集", edit_meal_record_path(@record) %> /
-    <%= link_to "この日の一覧へ戻る", meal_records_path(date: @record.eaten_on) %>
-  <% else %>
-    <%= link_to "この患者のカレンダーに戻る",
-        supporter_patient_path(@record.patient, date: @record.eaten_on) %>
-  <% end %>
-</div>
-
-<hr>
-
-<h2>コメント</h2>
-
-<% if @record.comments.any? %>
-  <ul class="comment-list">
-    <% @record.comments.order(created_at: :desc).each do |c| %>
-    <li class="comment-item" id="comment-<%= c.id %>">
-        <div class="comment-meta">
-          <strong><%= c.user.full_name %></strong>
-          <span class="comment-date"><%= c.created_at.in_time_zone("Asia/Tokyo").strftime("%Y/%m/%d %H:%M") %></span>
+      <% if @record.text.present? %>
+        <div class="meta-item meta-text">
+          <span class="meta-label">内容</span>
+          <div class="meta-value"><%= simple_format(@record.text) %></div>
         </div>
-        <div class="comment-body"><%= simple_format(h(c.body)) %></div>
+      <% end %>
 
-        <% if user_signed_in? && current_user.supporter? && c.user_id == current_user.id %>
+      <% if @record.note.present? %>
+        <div class="meta-item">
+          <span class="meta-label">備考</span>
+          <div class="meta-value"><%= simple_format(@record.note) %></div>
+        </div>
+      <% end %>
+    </section>
+
+    <%# 写真（あれば） %>
+    <% if @record.photo.attached? %>
+      <section class="record-photo">
+        <figure class="photo">
+          <%= image_tag @record.photo, alt: "食事写真", loading: "lazy" %>
+          <figcaption class="photo-actions">
+            <%= link_to "画像を新しいタブで開く",
+                        url_for(@record.photo),
+                        target: "_blank", rel: "noopener",
+                        class: "btn btn-secondary" %>
+          </figcaption>
+        </figure>
+      </section>
+    <% end %>
+  </div>
+
+  <%# コメント %>
+  <div class="card">
+    <h2 class="h2">コメント</h2>
+
+    <% if @record.comments.any? %>
+      <ul class="comment-list">
+        <% @record.comments.order(created_at: :desc).each do |c| %>
+          <li class="comment-item" id="comment-<%= c.id %>">
+            <div class="comment-meta">
+              <strong class="comment-author"><%= c.user.full_name %></strong>
+              <span class="comment-date">
+                <%= c.created_at.in_time_zone("Asia/Tokyo").strftime("%Y/%m/%d %H:%M") %>
+              </span>
+            </div>
+            <div class="comment-body"><%= simple_format(h(c.body)) %></div>
+
+            <% if user_signed_in? && current_user.supporter? && c.user_id == current_user.id %>
+              <div class="comment-actions">
+                <%= link_to "削除",
+                            meal_record_comment_path(@record, c),
+                            data: { turbo_method: :delete, turbo_confirm: "削除しますか？" },
+                            class: "btn btn-danger" %>
+              </div>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="muted">まだコメントはありません</p>
+    <% end %>
+
+    <% if user_signed_in? && current_user.supporter? %>
+      <div class="comment-form">
+        <%= form_with model: [@record, Comment.new], local: true do |f| %>
+          <%= f.text_area :body, rows: 3,
+                placeholder: "患者さんへのメッセージを入力…（1000文字まで）",
+                class: "form-control", required: true %>
           <div class="comment-actions">
-            <%= link_to "削除", meal_record_comment_path(@record, c),
-                        data: { turbo_method: :delete, turbo_confirm: "削除しますか？" } %>
+            <%= f.submit "コメントを投稿", class: "btn" %>
           </div>
         <% end %>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p class="muted">まだコメントはありません</p>
-<% end %>
-
-<% if user_signed_in? && current_user.supporter? %>
-  <div class="comment-form">
-    <%= form_with model: [@record, Comment.new], local: true do |f| %>
-      <%= f.text_area :body, rows: 3,
-        placeholder: "患者さんへのメッセージを入力…（1000文字まで）",
-        class: "form-control", required: true %>
-    <div class="comment-actions">
-    <%= f.submit "コメントを投稿", class: "btn-primary" %>
-    </div>
+      </div>
     <% end %>
   </div>
-<% end %>
-</div>
 
+  <% if current_user.supporter? %>
+    <div class="record-footer-actions" style="margin-top: 12px;">
+      <%= link_to "患者のカレンダーに戻る",
+                  supporter_patient_path(@record.patient, date: @record.eaten_on),
+                  class: "btn btn-secondary",
+                  data: { turbo_frame: "_top" } %>
+    </div>
+  <% end %>
+<% end %>

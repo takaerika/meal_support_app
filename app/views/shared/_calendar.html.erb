@@ -1,41 +1,40 @@
-<% base_path ||= ->(opts = {}) { root_path(opts) } %>
+<%# ===== デフォルトと受け取り ===== %>
+<% month_path ||= ->(opts = {}) { root_path(opts) } %>
+<% day_path   ||= ->(opts = {}) { root_path(opts) } %>
+
 <% current_month ||= Date.today.beginning_of_month %>
 <% prev_month   ||= (current_month << 1) %>
 <% next_month   ||= (current_month >> 1) %>
 <% first_wday   ||= current_month.wday %>
 <% last_day     ||= (current_month.next_month - 1).day %>
 
-<% base_path ||= ->(opts = {}) { root_path(opts) } %>
-
-<% month_path     ||= base_path || ->(opts = {}) { root_path(opts) } %>
-<% day_path       ||= month_path %> 
-
 <div class="calendar-header">
-  <%= link_to "◀︎", month_path.call(year: prev_month.year, month: prev_month.month), class: "month-nav" %>
+  <%= link_to "◀︎",
+              month_path.(year: prev_month.year, month: prev_month.month),
+              class: "month-nav" %>
   <h3><%= current_month.strftime("%Y年 %-m月") %></h3>
-  <%= link_to "▶︎", month_path.call(year: next_month.year, month: next_month.month), class: "month-nav" %>
+  <%= link_to "▶︎",
+              month_path.(year: next_month.year, month: next_month.month),
+              class: "month-nav" %>
 </div>
 
-<div id="calendar"
-     class="calendar"
-     data-year="<%= current_month.year %>"
-     data-month="<%= current_month.month %>">
-
-  <% %w(日 月 火 水 木 金 土).each do |day_name| %>
-    <div class="day-name"><%= day_name %></div>
+<div class="calendar">
+  <% %w(日 月 火 水 木 金 土).each do |dayname| %>
+    <div class="day-name"><%= dayname %></div>
   <% end %>
 
-  <% first_wday.times { %><div class="empty"></div><% } %>
+  <% first_wday.times do %>
+    <div class="empty"></div>
+  <% end %>
 
   <% 1.upto(last_day) do |d| %>
     <% date_obj = Date.new(current_month.year, current_month.month, d) %>
     <% is_today = (date_obj == Time.zone.today) %>
-    <% href = day_path.call(year: current_month.year, month: current_month.month, date: date_obj) %>
 
-    <%# セル全体をリンクにしてクリック復活 %>
-    <a href="<%= href %>" class="day-cell <%= 'today' if is_today %>">
+    <%= link_to day_path.(date: date_obj.to_s),
+                class: "day-cell #{'today' if is_today}",
+                data: { day: d } do %>
       <span class="day-number"><%= d %></span>
-    </a>
+    <% end %>
   <% end %>
 </div>
-
