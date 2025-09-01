@@ -13,12 +13,9 @@ class Supporter::HomeController < Supporter::BaseController
       when "recent"
         scope
           .left_joins(:meal_records)
-          .select(%q{
-            users.*,
-            COALESCE(users.last_meal_updated_at, MAX(meal_records.updated_at)) AS last_meal_order_key
-          })
+          .select('users.*, MAX(meal_records.updated_at) AS max_meal_updated_at')
           .group('users.id')
-          .order(Arel.sql('last_meal_order_key IS NULL, last_meal_order_key DESC'))
+          .order(Arel.sql('COALESCE(users.last_meal_updated_at, MAX(meal_records.updated_at)) IS NULL, COALESCE(users.last_meal_updated_at, MAX(meal_records.updated_at)) DESC'))
       else
         scope.order(:last_name, :first_name)
       end
