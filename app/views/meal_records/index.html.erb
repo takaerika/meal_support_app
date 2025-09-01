@@ -9,8 +9,8 @@
       <%= link_to meal_record_path(r),
           class: "meal-link",
           data: {
-            turbo_frame: "record_detail",          # ← JS不在でも開ける保険
-            action: "click->record-toggle#toggle", # ← JSが動く時は上書き
+            turbo_frame: "record_detail",                # JS不在でも開ける保険
+            action: "turbo:click->record-toggle#toggle", # ← ここを click から turbo:click に！
             record_id: r.id
           } do %>
         <span class="meal-slot-badge"><%= t("activerecord.enums.meal_record.slot.#{r.slot}") %></span>
