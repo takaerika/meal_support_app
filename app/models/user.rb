@@ -5,7 +5,15 @@ class User < ApplicationRecord
   enum role: { patient: 0, supporter: 1 }
   scope :alive, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
-
+  scope :order_by_last_meal, -> {
+  if ActiveRecord::Base.connection.column_exists?(:users, :last_meal_updated_at)
+    order(Arel.sql('users.last_meal_updated_at IS NULL, users.last_meal_updated_at DESC'))
+  else
+    left_joins(:meal_records)
+      .group('users.id')
+      .order(Arel.sql('MAX(meal_records.updated_at) IS NULL, MAX(meal_records.updated_at) DESC'))
+  end
+  }
   # 招待コード（サポーター側）
   has_one  :invite_code, foreign_key: :supporter_id, dependent: :destroy
 
