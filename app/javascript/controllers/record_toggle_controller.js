@@ -8,9 +8,10 @@ export default class extends Controller {
 
   connect() {
     this.frame = document.getElementById(this.frameIdValue)
+    this.element.dataset.hasJs = "true"
+
     this.onFrameEvent = (e) => {
       if (e.target.id !== this.frameIdValue) return
-      // 表示された詳細から currentId を同期
       const marker = e.target.querySelector("[data-current-id]")
       const id = marker ? String(marker.dataset.currentId || "") : ""
       if (id) {
@@ -32,10 +33,8 @@ export default class extends Controller {
   }
 
   toggle(e) {
-    // JSが生きている時だけ「閉じる」を上書き
     e.preventDefault()
-
-    const link = e.currentTarget
+    const link = e.detail?.link || e.currentTarget
     const clickedId = String(link.dataset.recordId || "")
     const url = link.getAttribute("href")
 
@@ -43,14 +42,12 @@ export default class extends Controller {
     const currentId = String(this.frame?.dataset.currentId || this.currentIdValue || "")
 
     if (currentId && clickedId && currentId === clickedId) {
-      // 同じ項目 → 閉じる
       this.clearFrame()
       this.currentIdValue = ""
       this.highlightActiveLink()
       return
     }
 
-    // 別項目 → フレーム遷移（確実に置換）
     this.currentIdValue = clickedId
     this.frame.src = url
     this.highlightActiveLink(clickedId)
