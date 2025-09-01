@@ -8,14 +8,13 @@ export default class extends Controller {
 
   connect() {
     this.frame = document.getElementById(this.frameIdValue)
+
     this.onClickCapture = (e) => {
       const a = e.target.closest("a.meal-link")
       if (!a || !this.element.contains(a)) return
 
       const href = a.getAttribute("href")
       const clickedId = String(a.dataset.recordId || "")
-
-
       const currentId = String(
         (this.frame?.dataset.currentId) ||
         (this.currentIdValue) ||
@@ -40,6 +39,7 @@ export default class extends Controller {
     }
 
     this.element.addEventListener("click", this.onClickCapture, { capture: true })
+
     this.onFrameEvent = (e) => {
       if (e.target.id !== this.frameIdValue) return
       const marker = e.target.querySelector("[data-current-id]")
