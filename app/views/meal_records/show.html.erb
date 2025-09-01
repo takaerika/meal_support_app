@@ -1,12 +1,14 @@
-<%= turbo_frame_tag "record_detail" do %>
-  <div data-current-id="<%= @record.id %>" hidden></div>
+<turbo-frame id="record_detail">
+  <div data-current-id="<%= @record.id %>"></div>
+
   <div class="record-show card">
     <header class="record-header">
       <h1 class="h1">食事記録</h1>
       <div class="record-actions">
-        <% if current_user.patient? %>
-          <%= link_to "編集", edit_meal_record_path(@record), class: "btn btn-secondary" %>
-        <% end %>
+        <%= link_to '編集',
+          edit_meal_record_path(@record),
+          class: 'btn btn-secondary',
+          data: { turbo_frame: 'record_detail' } %>
       </div>
     </header>
 
@@ -107,4 +109,4 @@
                   data: { turbo_frame: "_top" } %>
     </div>
   <% end %>
-<% end %>
+</turbo-frame>
