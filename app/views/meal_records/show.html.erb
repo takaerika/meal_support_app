@@ -10,7 +10,6 @@
       </div>
     </header>
 
-    <%# メタ情報 %>
     <section class="record-meta">
       <div class="meta-item">
         <span class="meta-label">日付</span>
@@ -99,4 +98,13 @@
       </div>
     <% end %>
   </div>
+
+  <% if current_user.supporter? %>
+    <div class="record-footer-actions" style="margin-top: 12px;">
+      <%= link_to "患者のカレンダーに戻る",
+                  supporter_patient_path(@record.patient, date: @record.eaten_on),
+                  class: "btn btn-secondary",
+                  data: { turbo_frame: "_top" } %>
+    </div>
+  <% end %>
 <% end %>
