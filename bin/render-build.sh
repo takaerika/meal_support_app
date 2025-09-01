@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# exit on error
-set -o errexit
+set -euo pipefail
 
-bundle install
+echo "[render-build] bundle install"
+bundle install --without development test --path vendor/bundle
+echo "[render-build] assets:precompile (RAILS_ENV=production)"
+export RAILS_ENV=production
 bundle exec rake assets:precompile
 bundle exec rake assets:clean
-bundle exec rake db:migrate
+echo "[render-build] done"
