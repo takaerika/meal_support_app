@@ -2,7 +2,7 @@ class Patient::HomeController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_patient!
 
- def index
+  def index
     today = Date.today
     year  = params[:year].presence&.to_i || today.year
     month = params[:month].presence&.to_i || today.month
@@ -14,11 +14,12 @@ class Patient::HomeController < ApplicationController
     @last_day   = (@month.next_month - 1).day
 
     @records = current_user.meal_records.where(eaten_on: @month..@month.end_of_month)
-    window_from = Time.zone.now - 24.hours  
-    Comment.joins(:meal_record)
-           .where(meal_records: { patient_id: current_user.id })
-           .order(created_at: :desc)
-           .first
+
+    @latest_comment = Comment
+      .joins(:meal_record)
+      .where(meal_records: { patient_id: current_user.id })
+      .order(created_at: :desc)
+      .first
   end
 
   private
