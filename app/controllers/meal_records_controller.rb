@@ -73,7 +73,7 @@ class MealRecordsController < ApplicationController
   
   def ensure_patient!
     if current_user.supporter?
-      redirect_to supporter_home_path, alert: "患者のみ利用できます"
+      redirect_to supporter_home_path
     end
   end
 

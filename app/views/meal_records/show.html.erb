@@ -33,9 +33,9 @@
       <% end %>
 
       <% if @record.note.present? %>
-        <div class="meta-item">
-          <span class="meta-label">備考</span>
-          <div class="meta-value"><%= simple_format(@record.note) %></div>
+        <div class="meta-item meta-text">
+        <span class="meta-label">備考</span>
+        <div class="meta-value"><%= simple_format(@record.note) %></div>
         </div>
       <% end %>
     </section>
@@ -76,8 +76,7 @@
               <div class="comment-actions">
                 <%= link_to "削除",
                             meal_record_comment_path(@record, c),
-                            data: { turbo_method: :delete, turbo_confirm: "削除しますか？" },
-                            class: "btn btn-danger" %>
+                            data: { turbo_method: :delete, turbo_confirm: "削除しますか？" } %>
               </div>
             <% end %>
           </li>
