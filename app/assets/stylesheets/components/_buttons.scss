@@ -8,7 +8,6 @@
 .btn-secondary{ background:var(--line); color:#111; }
 .btn-danger{ background: var(--danger); }
 
-/* FAB（タブを避ける） */
 .floating-button{
   position: fixed; right:16px;
   bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 16px);

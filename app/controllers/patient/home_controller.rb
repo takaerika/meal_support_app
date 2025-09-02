@@ -14,11 +14,9 @@ class Patient::HomeController < ApplicationController
     @last_day   = (@month.next_month - 1).day
 
     @records = current_user.meal_records.where(eaten_on: @month..@month.end_of_month)
-    window_from = Time.zone.now - 24.hours  # 期間制限しないならこの行は不要
-    @latest_comment =
+    window_from = Time.zone.now - 24.hours  
     Comment.joins(:meal_record)
            .where(meal_records: { patient_id: current_user.id })
-           # .where('comments.created_at >= ?', window_from)  # ←24h以内だけなら有効化
            .order(created_at: :desc)
            .first
   end
