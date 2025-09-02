@@ -29,7 +29,6 @@
 .day-cell:active{ transform: scale(.98); }
 
 .day-cell.today{
-  /* 塗りつぶしより“リング”の方が軽く見える */
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 75%, #fff) inset;
   border-color: var(--accent);
   color: inherit;
@@ -39,7 +38,6 @@
   position:absolute; top:6px; right:8px; font-size:12px; color: var(--primary);
 }
 
-/* 記録ありのドット（任意で has-record クラスを付ける運用） */
 .day-cell.has-record::after{
   content:""; position:absolute; left:10px; bottom:8px;
   width:8px; height:8px; border-radius:999px; background: var(--accent);

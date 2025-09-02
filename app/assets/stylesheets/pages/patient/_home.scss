@@ -19,25 +19,10 @@
   }
 }
 
-/* ゴール（使っているなら残す） */
-.goal-section {
-  background: color-mix(in srgb, var(--accent) 12%, #fff);
-  padding: var(--space-3);
-  border-radius: var(--r-md);
-  margin-bottom: var(--space-4);
-
-  h2 {
-    margin: 0;
-    font-size: 16px;
-    color: var(--primary);
-  }
-}
-
-/* 新着コメントカード */
 .comment-section {
   margin-top: var(--space-4);
   padding: var(--space-4);
-  background: #fffbe6; /* やや柔らかい黄色。テーマ化したいなら color-mixでもOK */
+  background: #fffbe6;
   border: 1px solid var(--warn);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-1);
