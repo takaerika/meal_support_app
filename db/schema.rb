@@ -75,6 +75,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_055523) do
     t.bigint "patient_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_support_links_on_deleted_at"
     t.index ["patient_id"], name: "index_support_links_on_patient_id"
     t.index ["supporter_id", "patient_id"], name: "index_support_links_on_supporter_id_and_patient_id", unique: true
     t.index ["supporter_id"], name: "index_support_links_on_supporter_id"

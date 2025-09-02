@@ -4,9 +4,9 @@ class SettingsController < ApplicationController
   def show
     @user = current_user
     if @user.patient?
-      @supporter = SupportLink.includes(:supporter).find_by(patient_id: @user.id)&.supporter
+      @supporter = @user.supporters.first
     else
-      @invite_code = InviteCode.find_by(supporter_id: @user.id)
+      @invite_code = @user.invite_code
     end
   end
 end
