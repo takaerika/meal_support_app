@@ -1,88 +1,132 @@
-# テーブル設計
+# アプリケーション名
+たべレコ
 
-## users テーブル
+# アプリケーション概要
+たべレコは、患者が日々の食事を簡単に記録でき、そのデータをサポーターとオンラインで共有して効率的にアドバイスを受けられるアプリケーションです。記録は来院時の指導にも活用できるよう整理されており、日常の食生活改善を幅広く支援します。
 
-| Column             | Type     | Options                                             |
-| ------------------ | -------- | --------------------------------------------------- |
-| first_name         | string   | null: false                                         |
-| last_name          | string   | null: false                                         |
-| email              | string   | null: false, unique: true                           |
-| encrypted_password | string   | null: false                                         |
-| role               | integer  | null: false, default: 0 (0=patient, 1=supporter)    |
-| deleted_at         | datetime |                                                     |
-| created_at         | datetime | null: false                                         |
-| updated_at         | datetime | null: false                                         |
+# URL
+https://meal-support-app.onrender.com 
 
-### Association
-- has_one  :invite_code (supporter only)
-- has_many :support_links_as_supporter, class_name: "SupportLink", foreign_key: "supporter_id", dependent: :destroy
-- has_many :patients, through: :support_links_as_supporter, source: :patient
-- has_many :support_links_as_patient, class_name: "SupportLink", foreign_key: "patient_id", dependent: :destroy
-- has_many :supporters, through: :support_links_as_patient, source: :supporter
-- has_many :meal_records, foreign_key: "patient_id", dependent: :destroy
-- has_many :comments_as_supporter, class_name: "Comment", foreign_key: "supporter_id", dependent: :destroy
+# テスト用アカウント
+### Basic認証
+・ID：admin
 
----
+・パスワード：2222
+### 患者ログイン
+・メールアドレス：test@222
 
-## invite_codes テーブル
+・パスワード：123qwe
+### サポーターログイン
+・メールアドレス： test@333
 
-| Column       | Type     | Options                               |
-| ------------ | -------- | ------------------------------------- |
-| supporter_id | bigint   | null: false, FK → users.id            |
-| code         | string   | null: false, unique: true             |
-| created_at   | datetime | null: false                           |
-| updated_at   | datetime | null: false                           |
+・パスワード：123qwe
 
-### Association
-- belongs_to :supporter, class_name: "User"
+# 利用方法
+### 患者側
+1. ログイン  
+2. 「＋今日の食事」ボタンから、朝食・昼食・夕食・間食を記録  
+3. 過去の記録はカレンダーから日付を選択して閲覧・振り返り  
 
----
+### サポーター側
+1. ログイン  
+2. 担当患者の食事記録をカレンダーから確認  
+3. 必要に応じてコメントを投稿し、フィードバックを行う  
 
-## support_links テーブル
+# デモ環境について（ご注意）
 
-| Column       | Type     | Options                               |
-| ------------ | -------- | ------------------------------------- |
-| supporter_id | bigint   | null: false, FK → users.id            |
-| patient_id   | bigint   | null: false, FK → users.id            |
-| created_at   | datetime | null: false                           |
-| updated_at   | datetime | null: false                           |
+本アプリのデモは Render の無料プラン上で動作しています。  
+そのため以下の制約があります。
 
-### Association
-- belongs_to :supporter, class_name: "User"
-- belongs_to :patient, class_name: "User"
+- 画像アップロードは**サーバー再起動や再デプロイ時に消去**される場合があります（無料プランはディスクが揮発性）。  
+- 無料プラン特性により、初回アクセス時に**起動待ち**が発生することがあります。
 
----
+※ 本番運用を想定する場合は、ActiveStorage の保存先を **AWS S3** などの外部ストレージに切り替えることで、画像の永続化が可能です。
 
-## meal_records テーブル
+# アプリケーションを作成した背景
+管理栄養士としての実務経験から、食事記録は患者にとって負担が大きく、またサポーター側も限られた時間で記録を把握しづらいという課題を実感しました。患者が気軽に記録を続けられ、サポーターも効率的にフィードバックできる仕組みが必要です。その解決策として、このアプリケーションを開発しました。
 
-| Column     | Type     | Options                                |
-| ---------- | -------- | -------------------------------------- |
-| patient_id | bigint   | null: false, FK → users.id             |
-| eaten_on   | date     | null: false                            |
-| slot       | integer  | null: false (0=朝/1=昼/2=夕/3=間食)     |
-| text       | text     |                                        |
-| note       | text     |                                        |
-| created_at | datetime | null: false                            |
-| updated_at | datetime | null: false                            |
+# 実装した機能
+### 患者側
+「＋今日の食事」から食事を記録し、カレンダーで過去の記録を振り返ることができます。  
+https://gyazo.com/9f43b5f8eceb8cdd86061caa5a8ddb97
+https://gyazo.com/b863078476c3308cd144bf3059099e40
+https://gyazo.com/618c76d5e1c6e2e929d7fac8fd995bb4
 
-### Association
-- belongs_to :patient, class_name: "User"
-- has_one_attached :photo
-- has_many :comments, dependent: :destroy
+### サポーター側
+担当患者の食事記録を確認し、コメントを投稿してフィードバックできます。  
+https://gyazo.com/c0de759aeba4fb2b85ece156f521ea0f
+https://gyazo.com/abb1d264ed62812f22b7df4f4f39aa97
 
----
+### 対面指導時の活用
+患者、サポーターのどちらからも食事の記録が簡単に見られるため、来院時の指導にも活用できます。  
+https://gyazo.com/aef71291fc2c064630061723327c6936 （患者側）
+https://gyazo.com/a5acaf763176154a20fc1812cb35a4c8 （サポーター側）
 
-## comments テーブル
+# 実装予定の機能
+### 献立テンプレート機能
+- よく食べる組み合わせ（例：朝「ヨーグルト＋バナナ＋コーヒー」）をテンプレ化し、1クリックで入力できる。
+- 個人の履歴から「最近よく使うテンプレ」を上位表示し、入力負荷を軽減。
 
-| Column        | Type     | Options                               |
-| ------------- | -------- | ------------------------------------- |
-| meal_record_id| bigint   | null: false, FK → meal_records.id     |
-| supporter_id  | bigint   | null: false, FK → users.id            |
-| body          | text     | null: false                           |
-| read          | boolean  | null: false, default: false           |
-| created_at    | datetime | null: false                           |
-| updated_at    | datetime | null: false                           |
+### 記録時間のアラーム機能
+- 朝/昼/夕/間食のリマインド時刻をユーザーが設定でき、時刻になると通知（アプリ内のお知らせ／メール）を送信。
+- 「今日は記録済み」なら当日の残りリマインドを自動でスキップ。
 
-### Association
-- belongs_to :meal_record
-- belongs_to :supporter, class_name: "User"
+# データベース設計
+https://gyazo.com/3b8330e0ec992763fb95f83f50b5dee6
+
+# 画面遷移図
+https://gyazo.com/600802527dac3c1ebb93d48a68e1db7a
+
+# 開発環境
+・言語：Ruby 3.2.0
+
+・フレームワーク：Ruby on Rails 7.1.5.2
+
+・データベース：PostgreSQL 14.19（本番）/ MySQL 8.0.42（開発）
+
+・フロントエンド：HTML / CSS / JavaScript
+
+・テキストエディタ：VS Code
+
+・認証機能：Devise 4.9.4
+
+・画像保存：Active Storage 7.1.5.2
+
+・テスト：RSpec 7.1.1 / FactoryBot 6.5.0
+
+・デプロイ環境：Render
+
+・バージョン管理：GitHub
+
+# ローカルでの動作方法
+
+```bash
+# 1. リポジトリをクローン
+git clone https://github.com/takaerika/meal_support_app.git
+cd meal_support_app
+
+# 2. RubyGems をインストール
+bundle install
+
+# 3. データベースを作成 & 初期データ投入（MySQLを使用）
+bin/rails db:create
+bin/rails db:migrate
+bin/rails db:seed
+
+# 4. サーバを起動
+bin/rails s
+# ブラウザで http://localhost:3000 にアクセス
+```
+# 工夫したポイント
+- 「＋今日の食事」ボタンから簡単に入力でき、過去の記録はカレンダーで振り返れるUIを採用し、患者が負担なく記録を続けやすい設計にしました。  
+- ActiveStorage を用いて写真アップロード機能を実装し、食事内容を視覚的に共有できるようにしました。  
+- Rails 7 標準の Hotwire（Turbo/Stimulus）を活用し、ページ全体をリロードせずに部分更新やスムーズな画面遷移を実現しました。  
+- GitHub の Issue / Projects を活用してタスク管理を行い、小さな単位で開発・改善を進めました。
+
+# 改善点
+- 現在はモデル単体テストのみ実施しているため、システムテストを追加し、主要な画面操作の流れも自動で検証できるようにしたいです。  
+- 患者・サポーターのアクセス範囲を明確にするため、認可処理を導入してセキュリティと可読性を高めたいです。  
+- 将来的には CI/CD を整備し、テストやデプロイを自動化することで、開発効率と品質向上を目指します。
+
+# 製作時間
+2週間
